@@ -1,4 +1,15 @@
-﻿using System;
+﻿/**
+ * Proyecto MiniTienda - Capa de Acceso a Datos
+ * 
+ * Implementación del patrón DAO (Data Access Object) para la gestión de usuarios.
+ * Esta clase proporciona métodos CRUD (Create, Read, Update) para manipular
+ * los datos de usuarios en la base de datos MySQL.
+ * 
+ * Autor: Elkin
+ * Fecha: Octubre 2023
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -6,10 +17,23 @@ using MySql.Data.MySqlClient;
 
 namespace MiniTienda.Data
 {
-    internal class UsersData
+    /// <summary>
+    /// Clase para gestionar operaciones de datos de usuarios en la base de datos.
+    /// Implementa el patrón DAO para abstraer la lógica de acceso a datos de la lógica de negocio.
+    /// Utiliza procedimientos almacenados para todas las operaciones.
+    /// </summary>
+    public class UsersData
     {
-        Persistence objPer = new Persistence();
+        /// <summary>
+        /// Instancia de la clase Persistence que proporciona acceso a la base de datos
+        /// </summary>
+        private readonly Persistence objPer = new Persistence();
 
+        /// <summary>
+        /// Obtiene todos los usuarios almacenados en la base de datos.
+        /// Ejecuta el procedimiento almacenado 'spSelectProvidersDDL'.
+        /// </summary>
+        /// <returns>DataSet con los usuarios</returns>
         public DataSet showUsers()
         {
             MySqlDataAdapter objAdapter = new MySqlDataAdapter();
@@ -25,6 +49,15 @@ namespace MiniTienda.Data
             return objData;
         }
 
+        /// <summary>
+        /// Guarda un nuevo usuario en la base de datos.
+        /// Ejecuta el procedimiento almacenado 'spInsertUsers'.
+        /// </summary>
+        /// <param name="_mail">Correo electrónico del usuario</param>
+        /// <param name="_password">Contraseña del usuario</param>
+        /// <param name="_salt">Salt para la contraseña</param>
+        /// <param name="_state">Estado del usuario (activo/inactivo)</param>
+        /// <returns>True si la operación fue exitosa, False en caso contrario</returns>
         public bool saveUsers(string _mail, string _password, string _salt, string _state)
         {
             bool executed = false;  // Variable que indica si la operación fue exitosa
@@ -62,6 +95,16 @@ namespace MiniTienda.Data
             return executed;
         }
 
+        /// <summary>
+        /// Actualiza los datos de un usuario existente en la base de datos.
+        /// Ejecuta el procedimiento almacenado 'spUpdateUsers'.
+        /// </summary>
+        /// <param name="_id">ID del usuario a actualizar</param>
+        /// <param name="_mail">Nuevo correo electrónico</param>
+        /// <param name="_password">Nueva contraseña</param>
+        /// <param name="_salt">Nuevo salt para la contraseña</param>
+        /// <param name="_state">Nuevo estado del usuario</param>
+        /// <returns>True si la operación fue exitosa, False en caso contrario</returns>
         public bool updateUsers(int _id, string _mail, string _password, string _salt, string _state)
         {
             bool executed = false; 
@@ -102,7 +145,5 @@ namespace MiniTienda.Data
             objPer.closeConnection();
             return executed;
         }
-
-
     }
 }
