@@ -219,6 +219,17 @@ BEGIN
 END//
 DELIMITER ;
 
+-- Elimina un proveedor existente
+DELIMITER //
+CREATE PROCEDURE spDeleteProvider(
+    IN p_id INT
+)
+BEGIN
+    DELETE FROM tbl_proveedores
+    WHERE prov_id = p_id;
+END//
+DELIMITER ;
+
 -- Selecciona todos los usuarios
 DELIMITER //
 CREATE PROCEDURE spSelectUsers()
