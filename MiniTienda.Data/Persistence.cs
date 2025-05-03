@@ -5,7 +5,7 @@
  * la persistencia y conexión a la base de datos MySQL.
  * 
  * Autor: Leonardo
- * Fecha: Octubre 2023
+ * Fecha: 02/05/2025
  */
 
 using MySql.Data.MySqlClient;

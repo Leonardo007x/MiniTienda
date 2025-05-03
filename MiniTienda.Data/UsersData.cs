@@ -6,9 +6,7 @@
  * los datos de usuarios en la base de datos MySQL.
  * 
  * Autor: Elkin
- * Fecha: Octubre 2023
- */
-
+ * Fecha: 02/05/2025
 using System;
 using System.Collections.Generic;
 using System.Data;

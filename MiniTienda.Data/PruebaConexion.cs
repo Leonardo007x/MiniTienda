@@ -6,7 +6,7 @@
  * si no existe y ejecutar scripts de inicialización.
  * 
  * Autor: Leonardo
- * Fecha: Octubre 2023
+ * Fecha: 02/05/2025
  */
 
 using System;
