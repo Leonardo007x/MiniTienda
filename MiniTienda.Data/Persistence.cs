@@ -9,10 +9,12 @@
  */
 
 using MySql.Data.MySqlClient;
+using System;
 using System.Configuration;
 
 namespace MiniTienda.Data
 {
+    
     /// <summary>
     /// Clase que maneja la persistencia de datos y conexión a la base de datos MySQL.
     /// Esta clase implementa el patrón Singleton para optimizar la gestión de conexiones.
@@ -20,6 +22,7 @@ namespace MiniTienda.Data
     /// </summary>
     public class Persistence
     {
+        MySqlConnection _connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["MiniTiendaDB"].ConnectionString);
         // Cadena de conexión obtenida del archivo App.config
         private readonly string _connectionString;
 
@@ -48,6 +51,25 @@ namespace MiniTienda.Data
         public MySqlConnection GetConnection()
         {
             return new MySqlConnection(_connectionString);
+        }
+
+        public MySqlConnection openConnection()
+        {
+            try
+            {
+                _connection.Open();
+                return _connection;
+            }
+            catch (Exception e)
+            {
+                e.ToString();
+                return null;
+            }
+        }
+
+        public void closeConnection()
+        {
+            _connection.Close();
         }
     }
 } 
