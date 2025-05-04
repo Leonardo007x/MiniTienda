@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="9.3.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
   </ItemGroup>
 
 </Project>

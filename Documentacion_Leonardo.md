@@ -29,29 +29,35 @@
   - UpdateCategory(id, name, description): Actualiza una categoría existente
   - DeleteCategory(id): Elimina una categoría
 
-## Sprint 2: Pruebas y Mejoras
+## Sprint 2: Implementación de la Capa Lógica de Negocio
 
-### 1. Proyecto de Pruebas
-- Se creó el proyecto TestCategoryData para probar todos los métodos de CategoryData
-- El proyecto incluye un menú interactivo que permite:
-  - Mostrar todas las categorías
-  - Insertar una nueva categoría
-  - Actualizar una categoría existente
-  - Eliminar una categoría
-  - Ejecutar todas las pruebas automáticamente
+### 1. Implementación de UsersLog 
+- Se creó la clase UsersLog en MiniTienda.Logic
+- Se implementaron los métodos de gestión de usuarios con conexión a UsersData:
+  - showUsers(): Obtiene todos los usuarios
+  - saveUsers(mail, password, salt, state): Guarda un nuevo usuario
+  - updateUsers(id, mail, password, salt, state): Actualiza un usuario existente
+- Se agregaron validaciones de datos para garantizar la integridad:
+  - Verificación de campos obligatorios
+  - Validación de datos nulos o vacíos
 
-### 2. Mejora de Documentación
-- Se agregaron comentarios XML a todas las clases y métodos
-- Se creó esta documentación para explicar el trabajo realizado
+### 2. Implementación de ProductsLog
+- Se creó la clase ProductsLog en MiniTienda.Logic
+- Se implementaron los métodos de gestión de productos con conexión a ProductsData:
+  - showProducts(): Obtiene todos los productos
+  - saveProducts(code, description, quantity, price, idCategory, idProvider): Guarda un nuevo producto
+  - updateProducts(id, code, description, quantity, price, idCategory, idProvider): Actualiza un producto existente
+- Se agregaron validaciones de reglas de negocio:
+  - Verificación de precio positivo
+  - Validación de campos obligatorios
+  - Verificación de cantidades válidas
 
-### 3. Pruebas de Integración
-- Se verificó que todos los métodos de CategoryData funcionen correctamente con la base de datos
-- Se comprobó la correcta implementación del patrón DAO (Data Access Object)
-
-## Conclusiones
-
-La capa de acceso a datos para categorías ha sido implementada exitosamente. La arquitectura sigue el patrón DAO, separando la lógica de acceso a datos de la lógica de negocio, lo que facilita el mantenimiento y las futuras ampliaciones.
-
-La implementación de procedimientos almacenados en la base de datos permite una mayor eficiencia y seguridad en las operaciones, al tiempo que encapsula la lógica de la base de datos.
-
-El proyecto se encuentra listo para ser integrado con las capas de lógica de negocio y presentación que desarrollarán los otros miembros del equipo. 
+### 3. Pruebas de la Capa Lógica
+- Se creó el proyecto MiniTienda.Tests para validar la capa lógica
+- Se implementaron pruebas para UsersLog:
+  - TestShowUsers(): Prueba la recuperación de usuarios
+  - TestSaveUser(): Prueba la validación y guardado de usuarios
+- Se implementaron pruebas para ProductsLog:
+  - TestShowProducts(): Prueba la recuperación de productos
+  - TestSaveProduct(): Prueba la validación y guardado de productos, incluyendo casos de prueba para validaciones
+- Se documentaron todos los métodos con comentarios XML para facilitar el mantenimiento 

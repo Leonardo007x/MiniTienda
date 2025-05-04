@@ -22,7 +22,9 @@ namespace MiniTienda.Data
     /// </summary>
     public class Persistence
     {
-        MySqlConnection _connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["MiniTiendaDB"].ConnectionString);
+        // Conexión para los métodos Open/Close
+        private MySqlConnection _connection;
+        
         // Cadena de conexión obtenida del archivo App.config
         private readonly string _connectionString;
 
@@ -33,7 +35,31 @@ namespace MiniTienda.Data
         /// </summary>
         public Persistence()
         {
-            _connectionString = ConfigurationManager.ConnectionStrings["MiniTiendaDB"].ConnectionString;
+            try
+            {
+                _connectionString = ConfigurationManager.ConnectionStrings["MiniTiendaDB"]?.ConnectionString;
+                
+                // Si no se pudo obtener la cadena de conexión desde el App.config, usar una predeterminada
+                if (string.IsNullOrEmpty(_connectionString))
+                {
+                    Console.WriteLine("ADVERTENCIA: No se pudo leer la configuración. Usando cadena de conexión predeterminada.");
+                    _connectionString = "Server=localhost;Port=3307;Database=MiniTiendaDB;Uid=root;Pwd=Password1.;";
+                }
+                
+                Console.WriteLine($"Cadena de conexión: {_connectionString}");
+                
+                _connection = new MySqlConnection(_connectionString);
+                Console.WriteLine("Conexión configurada correctamente.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al inicializar la conexión: " + ex.Message);
+                Console.WriteLine("Usando cadena de conexión predeterminada como respaldo.");
+                
+                // Usar una cadena de conexión predeterminada como respaldo
+                _connectionString = "Server=localhost;Port=3307;Database=MiniTiendaDB;Uid=root;Pwd=Password1.;";
+                _connection = new MySqlConnection(_connectionString);
+            }
         }
 
         /// <summary>

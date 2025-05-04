@@ -9,7 +9,7 @@
  */
 
 -- Seleccionar la base de datos a utilizar
-USE minitienda;
+USE minitiendadb;
 
 /**
  * Procedimiento para mostrar todas las categorías

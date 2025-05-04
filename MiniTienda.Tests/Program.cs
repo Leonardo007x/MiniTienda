@@ -10,6 +10,7 @@
  */
 
 using MiniTienda.Data;
+using MiniTienda.Logic;
 using System;
 using System.Data;
 
@@ -27,50 +28,23 @@ namespace MiniTienda.Tests
         /// <param name="args">Argumentos de la línea de comandos (no utilizados)</param>
         static void Main(string[] args)
         {
-            Console.WriteLine("===== Prueba completa de MiniTienda.Data =====");
+            Console.WriteLine("===== Prueba completa de MiniTienda =====");
             Console.WriteLine();
 
             try
             {
-                // Instanciar la clase CategoryData
-                CategoryData categoryData = new CategoryData();
+                // Pruebas de la capa de datos
+                TestDataLayer();
                 
-                // 1. Insertar una nueva categoría
-                Console.WriteLine("1. INSERTANDO NUEVA CATEGORÍA");
-                Console.WriteLine("--------------------------------------------------");
-                int newCategoryId = categoryData.SaveCategory("Electrónicos", "Productos electrónicos");
-                Console.WriteLine($"Categoría insertada con ID: {newCategoryId}");
-                Console.WriteLine("--------------------------------------------------");
-                Console.WriteLine();
+                Console.WriteLine("\n===== Pruebas de la capa lógica =====\n");
                 
-                // 2. Mostrar todas las categorías
-                Console.WriteLine("2. CONSULTANDO TODAS LAS CATEGORÍAS");
-                Console.WriteLine("--------------------------------------------------");
-                MostrarCategorias(categoryData);
-                Console.WriteLine();
+                // Pruebas de la capa lógica para Users
+                TestUsersLog testUsers = new TestUsersLog();
+                testUsers.RunAllTests();
                 
-                // 3. Actualizar la categoría con ID 1
-                Console.WriteLine("3. ACTUALIZANDO LA CATEGORÍA CON ID 1");
-                Console.WriteLine("--------------------------------------------------");
-                int rowsUpdated = categoryData.UpdateCategory(1, "Gadgets", "Gadgets electrónicos");
-                Console.WriteLine($"Filas actualizadas: {rowsUpdated}");
-                Console.WriteLine();
-                
-                Console.WriteLine("CATEGORÍAS DESPUÉS DE LA ACTUALIZACIÓN");
-                Console.WriteLine("--------------------------------------------------");
-                MostrarCategorias(categoryData);
-                Console.WriteLine();
-                
-                // 4. Eliminar la categoría con ID 1
-                Console.WriteLine("4. ELIMINANDO LA CATEGORÍA CON ID 1");
-                Console.WriteLine("--------------------------------------------------");
-                int rowsDeleted = categoryData.DeleteCategory(1);
-                Console.WriteLine($"Filas eliminadas: {rowsDeleted}");
-                Console.WriteLine();
-                
-                Console.WriteLine("CATEGORÍAS DESPUÉS DE LA ELIMINACIÓN");
-                Console.WriteLine("--------------------------------------------------");
-                MostrarCategorias(categoryData);
+                // Pruebas de la capa lógica para Products
+                TestProductsLog testProducts = new TestProductsLog();
+                testProducts.RunAllTests();
             }
             catch (Exception ex)
             {
@@ -88,6 +62,55 @@ namespace MiniTienda.Tests
             Console.WriteLine();
             Console.WriteLine("Presione cualquier tecla para salir...");
             Console.ReadKey();
+        }
+        
+        /// <summary>
+        /// Método que ejecuta las pruebas de la capa de datos
+        /// </summary>
+        static void TestDataLayer()
+        {
+            Console.WriteLine("===== Prueba de la capa de datos =====");
+            Console.WriteLine();
+
+            // Instanciar la clase CategoryData
+            CategoryData categoryData = new CategoryData();
+            
+            // 1. Insertar una nueva categoría
+            Console.WriteLine("1. INSERTANDO NUEVA CATEGORÍA");
+            Console.WriteLine("--------------------------------------------------");
+            int newCategoryId = categoryData.SaveCategory("Electrónicos", "Productos electrónicos");
+            Console.WriteLine($"Categoría insertada con ID: {newCategoryId}");
+            Console.WriteLine("--------------------------------------------------");
+            Console.WriteLine();
+            
+            // 2. Mostrar todas las categorías
+            Console.WriteLine("2. CONSULTANDO TODAS LAS CATEGORÍAS");
+            Console.WriteLine("--------------------------------------------------");
+            MostrarCategorias(categoryData);
+            Console.WriteLine();
+            
+            // 3. Actualizar la categoría con ID 1
+            Console.WriteLine("3. ACTUALIZANDO LA CATEGORÍA CON ID 1");
+            Console.WriteLine("--------------------------------------------------");
+            int rowsUpdated = categoryData.UpdateCategory(1, "Gadgets", "Gadgets electrónicos");
+            Console.WriteLine($"Filas actualizadas: {rowsUpdated}");
+            Console.WriteLine();
+            
+            Console.WriteLine("CATEGORÍAS DESPUÉS DE LA ACTUALIZACIÓN");
+            Console.WriteLine("--------------------------------------------------");
+            MostrarCategorias(categoryData);
+            Console.WriteLine();
+            
+            // 4. Eliminar la categoría con ID 1
+            Console.WriteLine("4. ELIMINANDO LA CATEGORÍA CON ID 1");
+            Console.WriteLine("--------------------------------------------------");
+            int rowsDeleted = categoryData.DeleteCategory(1);
+            Console.WriteLine($"Filas eliminadas: {rowsDeleted}");
+            Console.WriteLine();
+            
+            Console.WriteLine("CATEGORÍAS DESPUÉS DE LA ELIMINACIÓN");
+            Console.WriteLine("--------------------------------------------------");
+            MostrarCategorias(categoryData);
         }
         
         /// <summary>
