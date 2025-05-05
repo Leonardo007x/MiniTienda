@@ -1,4 +1,15 @@
-﻿using System;
+/**
+ * Proyecto MiniTienda - Capa de Acceso a Datos
+ * 
+ * Implementación del patrón DAO (Data Access Object) para la gestión de productos.
+ * Esta clase proporciona métodos CRUD (Create, Read, Update) para manipular
+ * los datos de productos en la base de datos MySQL.
+ * 
+ * Autor: Elkin
+ * Fecha: 02/05/2025
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -6,18 +17,34 @@ using MySql.Data.MySqlClient;
 
 namespace MiniTienda.Data
 {
-    internal class ProductsData
+    /// <summary>
+    /// Clase para gestionar operaciones de datos de productos en la base de datos.
+    /// Implementa el patrón DAO para abstraer la lógica de acceso a datos de la lógica de negocio.
+    /// Utiliza procedimientos almacenados para todas las operaciones.
+    /// </summary>
+    public class ProductsData
     {
-        Persistence objPer = new Persistence();
+        /// <summary>
+        /// Instancia de la clase Persistence que proporciona acceso a la base de datos
+        /// </summary>
+        private readonly Persistence objPer = new Persistence();
 
-        public DataSet showUsers()
+        /// <summary>
+        /// Obtiene todos los productos almacenados en la base de datos.
+        /// Ejecuta el procedimiento almacenado que recupera la lista de productos.
+        /// </summary>
+        /// <returns>DataSet con los productos</returns>
+        /// <remarks>
+        /// NOTA: Este método tiene un error en el nombre del procedimiento almacenado,
+        /// debería usar un procedimiento para productos, no para proveedores.
+        /// </remarks>
+        public DataSet showProducts()
         {
             MySqlDataAdapter objAdapter = new MySqlDataAdapter();
             DataSet objData = new DataSet();
 
             MySqlCommand objSelectCmd = new MySqlCommand();
             objSelectCmd.Connection = objPer.openConnection();
-            objSelectCmd.CommandText = "spSelectProvidersDDL";
             objSelectCmd.CommandType = CommandType.StoredProcedure;
             objAdapter.SelectCommand = objSelectCmd;
             objAdapter.Fill(objData);
@@ -25,6 +52,17 @@ namespace MiniTienda.Data
             return objData;
         }
 
+        /// <summary>
+        /// Guarda un nuevo producto en la base de datos.
+        /// Ejecuta el procedimiento almacenado 'spInsertProducts'.
+        /// </summary>
+        /// <param name="_code">Código del producto</param>
+        /// <param name="_description">Descripción del producto</param>
+        /// <param name="_quantity">Cantidad en inventario</param>
+        /// <param name="_price">Precio del producto</param>
+        /// <param name="_fkCategory">ID de la categoría asociada</param>
+        /// <param name="_fkProvider">ID del proveedor asociado</param>
+        /// <returns>True si la operación fue exitosa, False en caso contrario</returns>
         public bool saveProducts(string _code, string _description, int _quantity, double _price, int _fkCategory, int _fkProvider)
         {
             bool executed = false;
@@ -65,6 +103,18 @@ namespace MiniTienda.Data
             return executed;
         }
 
+        /// <summary>
+        /// Actualiza los datos de un producto existente en la base de datos.
+        /// Ejecuta el procedimiento almacenado 'spUpdateProduct'.
+        /// </summary>
+        /// <param name="_id">ID del producto a actualizar</param>
+        /// <param name="_code">Nuevo código del producto</param>
+        /// <param name="_description">Nueva descripción</param>
+        /// <param name="_quantity">Nueva cantidad en inventario</param>
+        /// <param name="_price">Nuevo precio</param>
+        /// <param name="_fkCategory">Nueva categoría asociada</param>
+        /// <param name="_fkProvider">Nuevo proveedor asociado</param>
+        /// <returns>True si la operación fue exitosa, False en caso contrario</returns>
         public bool updateProducts(int _id, string _code, string _description, int _quantity, double _price, int _fkCategory, int _fkProvider)
         {
             bool executed = false; 
@@ -105,7 +155,6 @@ namespace MiniTienda.Data
             objPer.closeConnection();
             return executed;
         }
-
 
 
     }

@@ -6,12 +6,13 @@
  * (Create, Read, Update, Delete) funcionan correctamente con la base de datos.
  * 
  * Autor: Leonardo
- * Fecha: Octubre 2023
+ * Fecha: 02/05/2025
  */
 
 using System;
 using System.Data;
 using MiniTienda.Data;
+using MySql.Data.MySqlClient;
 
 namespace TestCategoryData
 {
@@ -27,6 +28,7 @@ namespace TestCategoryData
         static void Main(string[] args)
         {
             Console.WriteLine("===== PRUEBAS DE CATEGORYDATA =====");
+            Console.WriteLine("Validación contra script_creacion_bd.sql");
             
             bool continuar = true;
             while (continuar)
@@ -37,7 +39,9 @@ namespace TestCategoryData
                 Console.WriteLine("2. Insertar una nueva categoría");
                 Console.WriteLine("3. Actualizar una categoría");
                 Console.WriteLine("4. Eliminar una categoría");
-                Console.WriteLine("5. Ejecutar todas las pruebas");
+                Console.WriteLine("5. Buscar categorías por letra inicial");
+                Console.WriteLine("6. Contar categorías por letra inicial");
+                Console.WriteLine("7. Ejecutar todas las pruebas");
                 Console.WriteLine("0. Salir");
                 
                 Console.Write("\nOpción: ");
@@ -59,6 +63,12 @@ namespace TestCategoryData
                         TestDeleteCategory();
                         break;
                     case "5":
+                        TestSearchCategories();
+                        break;
+                    case "6":
+                        TestCountCategories();
+                        break;
+                    case "7":
                         RunAllTests();
                         break;
                     case "0":
@@ -80,7 +90,7 @@ namespace TestCategoryData
         /// </summary>
         static void TestShowCategories()
         {
-            Console.WriteLine("\n--- Probando ShowCategories() ---");
+            Console.WriteLine("\n--- Probando ShowCategories() (spSelectCategory) ---");
             try
             {
                 // Crear instancia de CategoryData
@@ -113,19 +123,16 @@ namespace TestCategoryData
         /// </summary>
         static void TestSaveCategory()
         {
-            Console.WriteLine("\n--- Probando SaveCategory() ---");
+            Console.WriteLine("\n--- Probando SaveCategory() (spInsertCategory) ---");
             try
             {
-                // Solicitar datos de la nueva categoría
-                Console.Write("Ingrese el nombre de la categoría: ");
-                string name = Console.ReadLine();
-                
+                // Solicitar descripción de la categoría
                 Console.Write("Ingrese la descripción de la categoría: ");
                 string description = Console.ReadLine();
                 
                 // Crear instancia de CategoryData y guardar la nueva categoría
                 CategoryData categoryData = new CategoryData();
-                int categoryId = categoryData.SaveCategory(name, description);
+                int categoryId = categoryData.SaveCategory(string.Empty, description);
                 
                 // Mostrar resultado
                 Console.WriteLine($"Categoría guardada con ID: {categoryId}");
@@ -145,7 +152,7 @@ namespace TestCategoryData
         /// </summary>
         static void TestUpdateCategory()
         {
-            Console.WriteLine("\n--- Probando UpdateCategory() ---");
+            Console.WriteLine("\n--- Probando UpdateCategory() (spUpdateCategory) ---");
             try
             {
                 // Crear instancia de CategoryData
@@ -168,15 +175,12 @@ namespace TestCategoryData
                     return;
                 }
                 
-                // Solicitar nuevos datos
-                Console.Write("Ingrese el nuevo nombre: ");
-                string name = Console.ReadLine();
-                
+                // Solicitar nueva descripción
                 Console.Write("Ingrese la nueva descripción: ");
                 string description = Console.ReadLine();
                 
                 // Actualizar la categoría
-                int affectedRows = categoryData.UpdateCategory(categoryId, name, description);
+                int affectedRows = categoryData.UpdateCategory(categoryId, string.Empty, description);
                 
                 // Mostrar resultado
                 Console.WriteLine($"Filas afectadas: {affectedRows}");
@@ -198,7 +202,7 @@ namespace TestCategoryData
         /// </summary>
         static void TestDeleteCategory()
         {
-            Console.WriteLine("\n--- Probando DeleteCategory() ---");
+            Console.WriteLine("\n--- Probando DeleteCategory() (spDeleteCategory) ---");
             try
             {
                 // Crear instancia de CategoryData
@@ -249,6 +253,82 @@ namespace TestCategoryData
         }
         
         /// <summary>
+        /// Prueba el método SearchCategoriesByLetter() de la clase CategoryData
+        /// Permite al usuario buscar categorías por letra inicial
+        /// </summary>
+        static void TestSearchCategories()
+        {
+            Console.WriteLine("\n--- Probando SearchCategoriesByLetter() (spSearchCategory) ---");
+            try
+            {
+                // Solicitar letra inicial para la búsqueda
+                Console.Write("Ingrese la letra inicial para buscar categorías: ");
+                string letter = Console.ReadLine();
+                
+                if (string.IsNullOrEmpty(letter))
+                {
+                    Console.WriteLine("Debe ingresar al menos un carácter");
+                    return;
+                }
+                
+                // Crear instancia de CategoryData y buscar categorías
+                CategoryData categoryData = new CategoryData();
+                DataTable categories = categoryData.SearchCategoriesByLetter(letter);
+                
+                // Mostrar resultados
+                Console.WriteLine($"Se encontraron {categories.Rows.Count} categorías que comienzan con '{letter}':");
+                
+                foreach (DataRow row in categories.Rows)
+                {
+                    Console.WriteLine($"ID: {row["id"]}, Descripción: {row["description"]}");
+                }
+                
+                Console.WriteLine("Prueba SearchCategoriesByLetter: EXITOSA ✓");
+            }
+            catch (Exception ex)
+            {
+                // Mostrar mensaje de error si falla la prueba
+                Console.WriteLine($"Prueba SearchCategoriesByLetter: ERROR ✗");
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+        
+        /// <summary>
+        /// Prueba el método CountCategoriesByLetter() de la clase CategoryData
+        /// Permite al usuario contar categorías por letra inicial
+        /// </summary>
+        static void TestCountCategories()
+        {
+            Console.WriteLine("\n--- Probando CountCategoriesByLetter() (spCountCategory) ---");
+            try
+            {
+                // Solicitar letra inicial para la búsqueda
+                Console.Write("Ingrese la letra inicial para contar categorías: ");
+                string letter = Console.ReadLine();
+                
+                if (string.IsNullOrEmpty(letter))
+                {
+                    Console.WriteLine("Debe ingresar al menos un carácter");
+                    return;
+                }
+                
+                // Crear instancia de CategoryData y contar categorías
+                CategoryData categoryData = new CategoryData();
+                int count = categoryData.CountCategoriesByLetter(letter);
+                
+                // Mostrar resultado
+                Console.WriteLine($"Se encontraron {count} categorías que comienzan con '{letter}'");
+                Console.WriteLine("Prueba CountCategoriesByLetter: EXITOSA ✓");
+            }
+            catch (Exception ex)
+            {
+                // Mostrar mensaje de error si falla la prueba
+                Console.WriteLine($"Prueba CountCategoriesByLetter: ERROR ✗");
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+        
+        /// <summary>
         /// Ejecuta una secuencia completa de pruebas automatizadas:
         /// 1. Muestra todas las categorías
         /// 2. Crea una nueva categoría de prueba
@@ -268,16 +348,25 @@ namespace TestCategoryData
                 // Crear una categoría de prueba
                 Console.WriteLine("\n--- Prueba automatizada SaveCategory() ---");
                 CategoryData categoryData = new CategoryData();
-                string testName = "Test Category";
-                string testDesc = "Test Description " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                string testDesc = "Categoría de Prueba " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 
-                int newId = categoryData.SaveCategory(testName, testDesc);
+                int newId = categoryData.SaveCategory(string.Empty, testDesc);
                 Console.WriteLine($"Categoría de prueba creada con ID: {newId}");
+                
+                // Buscar categorías que comienzan con 'C'
+                Console.WriteLine("\n--- Prueba automatizada SearchCategoriesByLetter() ---");
+                DataTable searchResults = categoryData.SearchCategoriesByLetter("C");
+                Console.WriteLine($"Categorías que comienzan con 'C': {searchResults.Rows.Count}");
+                
+                // Contar categorías que comienzan con 'C'
+                Console.WriteLine("\n--- Prueba automatizada CountCategoriesByLetter() ---");
+                int countResults = categoryData.CountCategoriesByLetter("C");
+                Console.WriteLine($"Número de categorías que comienzan con 'C': {countResults}");
                 
                 // Actualizar la categoría creada
                 Console.WriteLine("\n--- Prueba automatizada UpdateCategory() ---");
-                string updatedDesc = "Updated Description " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                int updateResult = categoryData.UpdateCategory(newId, testName, updatedDesc);
+                string updatedDesc = "Categoría Actualizada " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                int updateResult = categoryData.UpdateCategory(newId, string.Empty, updatedDesc);
                 Console.WriteLine($"Actualización: {updateResult} filas afectadas");
                 
                 // Eliminar la categoría creada

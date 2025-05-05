@@ -5,7 +5,7 @@
  * Esta clase puede ser eliminada o reemplazada según las necesidades del proyecto.
  * 
  * Autor: Leonardo
- * Fecha: Octubre 2023
+ * Fecha: 02/05/2025
  */
 
 using System;
