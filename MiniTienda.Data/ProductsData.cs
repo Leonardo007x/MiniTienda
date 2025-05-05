@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Proyecto MiniTienda - Capa de Acceso a Datos
  * 
  * Implementación del patrón DAO (Data Access Object) para la gestión de productos.
@@ -45,7 +45,6 @@ namespace MiniTienda.Data
 
             MySqlCommand objSelectCmd = new MySqlCommand();
             objSelectCmd.Connection = objPer.openConnection();
-            objSelectCmd.CommandText = "spSelectProducts"; // Corregido: Debería usar un procedimiento para productos
             objSelectCmd.CommandType = CommandType.StoredProcedure;
             objAdapter.SelectCommand = objSelectCmd;
             objAdapter.Fill(objData);
@@ -156,5 +155,7 @@ namespace MiniTienda.Data
             objPer.closeConnection();
             return executed;
         }
+
+
     }
 }
