@@ -14,7 +14,11 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TestUserProductData")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+<<<<<<< HEAD
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+949a6f800f2ab79dfe25b2c4a5d303c5bf49cd8f")]
+=======
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8e57ffa0966c5f0108342722c509b97735a28ba5")]
+>>>>>>> b3a14fa (Agregado ProvidersLog.cs y modificaciones en ensamblados)
 [assembly: System.Reflection.AssemblyProductAttribute("TestUserProductData")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TestUserProductData")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
