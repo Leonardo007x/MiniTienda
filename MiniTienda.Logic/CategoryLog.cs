@@ -13,7 +13,7 @@ using System.Security.Cryptography;
 namespace MiniTienda.Logic
 {
     // Clase interna que actúa como puente entre la capa lógica (servicios) y la capa de datos.
-    internal class CategoryLog
+    public class CategoryLog
     {
         // Instancia privada de la clase de acceso a datos
         CategoryData objCat = new CategoryData();
