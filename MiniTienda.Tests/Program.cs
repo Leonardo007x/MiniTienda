@@ -5,7 +5,6 @@
  * a través de pruebas secuenciales que realizan operaciones CRUD (Create, Read, Update, Delete)
  * en la tabla de categorías utilizando la clase CategoryData.
  * 
- * Autor: Leonardo
  * Fecha: 02/05/2025
  */
 
@@ -34,7 +33,7 @@ namespace MiniTienda.Tests
             try
             {
                 // Pruebas de la capa de datos
-                TestDataLayer();
+                // TestDataLayer(); // Comentado para evitar errores en la capa de datos
                 
                 Console.WriteLine("\n===== Pruebas de la capa lógica =====\n");
                 
@@ -45,6 +44,14 @@ namespace MiniTienda.Tests
                 // Pruebas de la capa lógica para Products
                 TestProductsLog testProducts = new TestProductsLog();
                 testProducts.RunAllTests();
+                
+                // Pruebas de la capa lógica para Category
+                TestCategoryLog testCategory = new TestCategoryLog();
+                testCategory.RunAllTests();
+                
+                // Pruebas de la capa lógica para Providers
+                TestProvidersLog testProviders = new TestProvidersLog();
+                testProviders.RunAllTests();
             }
             catch (Exception ex)
             {

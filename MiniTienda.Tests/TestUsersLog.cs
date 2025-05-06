@@ -69,7 +69,9 @@ namespace MiniTienda.Tests
             Console.WriteLine("Prueba de guardar usuario");
             try
             {
-                string mail = "usuario_prueba@test.com";
+                // Generar un correo aleatorio para evitar duplicados
+                string randomId = DateTime.Now.Ticks.ToString();
+                string mail = $"usuario_prueba{randomId}@test.com";
                 string password = "password123";
                 string salt = "abc123";
                 string state = "Activo";
