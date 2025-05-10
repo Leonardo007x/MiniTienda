@@ -71,7 +71,7 @@ namespace MiniTienda.Logic
             string salt = "salt" + DateTime.Now.Ticks;
             // Estado por defecto
             string state = "activo";
-
+                
             return _userData.saveUsers(email, password, salt, state);
         }
 
