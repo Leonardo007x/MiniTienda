@@ -12,6 +12,7 @@
 using System;
 using System.Data;
 using MiniTienda.Data;
+using MiniTienda.Logic;
 
 namespace TestUserProductData
 {

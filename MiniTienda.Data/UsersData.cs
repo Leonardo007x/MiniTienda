@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Proyecto MiniTienda - Capa de Acceso a Datos
  * 
  * Implementación del patrón DAO (Data Access Object) para la gestión de usuarios.
@@ -57,6 +57,7 @@ namespace MiniTienda.Data
         /// <param name="_salt">Salt para la contraseña</param>
         /// <param name="_state">Estado del usuario (activo/inactivo)</param>
         /// <returns>True si la operación fue exitosa, False en caso contrario</returns>
+
         public bool saveUsers(string _mail, string _password, string _salt, string _state)
         {
             bool executed = false;  // Variable que indica si la operación fue exitosa
@@ -145,5 +146,6 @@ namespace MiniTienda.Data
             objPer.closeConnection();
             return executed;
         }
+
     }
 }

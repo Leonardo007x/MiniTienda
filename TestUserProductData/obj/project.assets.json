@@ -489,6 +489,19 @@
         "runtime": {
           "bin/placeholder/MiniTienda.Data.dll": {}
         }
+      },
+      "MiniTienda.Logic/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "MiniTienda.Data": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/MiniTienda.Logic.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/MiniTienda.Logic.dll": {}
+        }
       }
     }
   },
@@ -1620,11 +1633,17 @@
       "type": "project",
       "path": "../MiniTienda.Data/MiniTienda.Data.csproj",
       "msbuildProject": "../MiniTienda.Data/MiniTienda.Data.csproj"
+    },
+    "MiniTienda.Logic/1.0.0": {
+      "type": "project",
+      "path": "../MiniTienda.Logic/MiniTienda.Logic.csproj",
+      "msbuildProject": "../MiniTienda.Logic/MiniTienda.Logic.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "MiniTienda.Data >= 1.0.0"
+      "MiniTienda.Data >= 1.0.0",
+      "MiniTienda.Logic >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -1661,6 +1680,9 @@
           "projectReferences": {
             "C:\\Users\\julia\\OneDrive\\Escritorio\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj": {
               "projectPath": "C:\\Users\\julia\\OneDrive\\Escritorio\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj"
+            },
+            "C:\\Users\\julia\\OneDrive\\Escritorio\\MiniTienda\\MiniTienda.Logic\\MiniTienda.Logic.csproj": {
+              "projectPath": "C:\\Users\\julia\\OneDrive\\Escritorio\\MiniTienda\\MiniTienda.Logic\\MiniTienda.Logic.csproj"
             }
           }
         }
