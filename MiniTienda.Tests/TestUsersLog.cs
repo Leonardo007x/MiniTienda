@@ -34,7 +34,7 @@ namespace MiniTienda.Tests
         }
 
         /// <summary>
-        /// Prueba el método showUsers() para verificar que se obtengan correctamente los usuarios
+        /// Prueba el método GetUsers() para verificar que se obtengan correctamente los usuarios
         /// desde la base de datos.
         /// </summary>
         public void TestShowUsers()
@@ -42,7 +42,7 @@ namespace MiniTienda.Tests
             Console.WriteLine("Prueba de mostrar usuarios");
             try
             {
-                DataSet ds = objUsersLog.showUsers();
+                DataSet ds = objUsersLog.GetUsers();
                 if (ds != null && ds.Tables.Count > 0)
                 {
                     Console.WriteLine("Prueba exitosa: Se obtuvieron los usuarios correctamente");
@@ -61,7 +61,7 @@ namespace MiniTienda.Tests
         }
 
         /// <summary>
-        /// Prueba el método saveUsers() para verificar que los usuarios se guarden correctamente
+        /// Prueba el método SaveUser() para verificar que los usuarios se guarden correctamente
         /// y que las validaciones funcionen adecuadamente.
         /// </summary>
         public void TestSaveUser()
@@ -69,12 +69,12 @@ namespace MiniTienda.Tests
             Console.WriteLine("Prueba de guardar usuario");
             try
             {
-                string mail = "usuario_prueba@test.com";
-                string password = "password123";
-                string salt = "abc123";
-                string state = "Activo";
+                string name = "Usuario Test";
+                string email = "test@example.com";
+                string password = "Test1234!";
+                string role = "Cliente";
 
-                bool result = objUsersLog.saveUsers(mail, password, salt, state);
+                bool result = objUsersLog.SaveUser(name, email, password, role);
                 
                 if (result)
                 {
@@ -85,16 +85,28 @@ namespace MiniTienda.Tests
                     Console.WriteLine("Prueba fallida: No se pudo guardar el usuario");
                 }
 
-                // Prueba de validación
-                Console.WriteLine("Prueba de validación (datos vacíos)");
-                bool resultVacio = objUsersLog.saveUsers("", "", "", "");
-                if (!resultVacio)
+                // Prueba de validación para email inválido
+                Console.WriteLine("Prueba de validación (email inválido)");
+                bool resultEmailInvalido = objUsersLog.SaveUser(name, "correo-invalido", password, role);
+                if (!resultEmailInvalido)
                 {
-                    Console.WriteLine("Prueba de validación exitosa: Se rechazaron datos vacíos");
+                    Console.WriteLine("Prueba de validación exitosa: Se rechazó email inválido");
                 }
                 else
                 {
-                    Console.WriteLine("Prueba de validación fallida: Se aceptaron datos vacíos");
+                    Console.WriteLine("Prueba de validación fallida: Se aceptó email inválido");
+                }
+
+                // Prueba de validación para contraseña débil
+                Console.WriteLine("Prueba de validación (contraseña débil)");
+                bool resultPasswordDebil = objUsersLog.SaveUser(name, email, "123", role);
+                if (!resultPasswordDebil)
+                {
+                    Console.WriteLine("Prueba de validación exitosa: Se rechazó contraseña débil");
+                }
+                else
+                {
+                    Console.WriteLine("Prueba de validación fallida: Se aceptó contraseña débil");
                 }
             }
             catch (Exception ex)

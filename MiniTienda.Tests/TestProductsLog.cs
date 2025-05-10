@@ -34,7 +34,7 @@ namespace MiniTienda.Tests
         }
 
         /// <summary>
-        /// Prueba el método showProducts() para verificar que se obtengan correctamente los productos
+        /// Prueba el método GetProducts() para verificar que se obtengan correctamente los productos
         /// desde la base de datos.
         /// </summary>
         public void TestShowProducts()
@@ -42,7 +42,7 @@ namespace MiniTienda.Tests
             Console.WriteLine("Prueba de mostrar productos");
             try
             {
-                DataSet ds = objProductsLog.showProducts();
+                DataSet ds = objProductsLog.GetProducts();
                 if (ds != null && ds.Tables.Count > 0)
                 {
                     Console.WriteLine("Prueba exitosa: Se obtuvieron los productos correctamente");
@@ -61,22 +61,21 @@ namespace MiniTienda.Tests
         }
 
         /// <summary>
-        /// Prueba el método saveProducts() para verificar que los productos se guarden correctamente
-        /// y que las validaciones funcionen adecuadamente para casos como código vacío o precio negativo.
+        /// Prueba el método SaveProduct() para verificar que los productos se guarden correctamente
+        /// y que las validaciones funcionen adecuadamente para casos como nombre vacío o precio negativo.
         /// </summary>
         public void TestSaveProduct()
         {
             Console.WriteLine("Prueba de guardar producto");
             try
             {
-                string code = "PROD-TEST-001";
-                string description = "Producto de prueba";
-                int quantity = 10;
-                double price = 25.99;
-                int idCategory = 1;
-                int idProvider = 1;
+                string name = "Producto de prueba";
+                decimal price = 25.99m;
+                int stock = 10;
+                int categoryId = 1;
+                int providerId = 1;
 
-                bool result = objProductsLog.saveProducts(code, description, quantity, price, idCategory, idProvider);
+                bool result = objProductsLog.SaveProduct(name, price, stock, categoryId, providerId);
                 
                 if (result)
                 {
@@ -87,21 +86,21 @@ namespace MiniTienda.Tests
                     Console.WriteLine("Prueba fallida: No se pudo guardar el producto");
                 }
 
-                // Prueba de validación para código vacío
-                Console.WriteLine("Prueba de validación (código vacío)");
-                bool resultCodigoVacio = objProductsLog.saveProducts("", description, quantity, price, idCategory, idProvider);
+                // Prueba de validación para nombre vacío
+                Console.WriteLine("Prueba de validación (nombre vacío)");
+                bool resultCodigoVacio = objProductsLog.SaveProduct("", price, stock, categoryId, providerId);
                 if (!resultCodigoVacio)
                 {
-                    Console.WriteLine("Prueba de validación exitosa: Se rechazó código vacío");
+                    Console.WriteLine("Prueba de validación exitosa: Se rechazó nombre vacío");
                 }
                 else
                 {
-                    Console.WriteLine("Prueba de validación fallida: Se aceptó código vacío");
+                    Console.WriteLine("Prueba de validación fallida: Se aceptó nombre vacío");
                 }
 
                 // Prueba de validación para precio negativo
                 Console.WriteLine("Prueba de validación (precio negativo)");
-                bool resultPrecioNegativo = objProductsLog.saveProducts(code, description, quantity, -10.0, idCategory, idProvider);
+                bool resultPrecioNegativo = objProductsLog.SaveProduct(name, -10.0m, stock, categoryId, providerId);
                 if (!resultPrecioNegativo)
                 {
                     Console.WriteLine("Prueba de validación exitosa: Se rechazó precio negativo");
