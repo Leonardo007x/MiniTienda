@@ -1,0 +1,131 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Main.master.cs" Inherits="MiniTienda.Presentation.Main" %>
+
+<%--
+    Main.Master
+    Página maestra que define la estructura principal del sitio web
+    Incluye la barra de navegación, el sistema de menús y la plantilla base para todas las páginas
+--%>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Mini Tienda</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <%-- ContentPlaceHolder para incluir estilos específicos de cada página --%>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+    <style>
+        /* Estilos generales del sitio */
+        body {
+            font-family: Arial, sans-serif;
+            padding-top: 60px;
+            background-color: #f8f9fa;
+        }
+        
+        /* Estilos de la barra de navegación */
+        .navbar {
+            background-color: #343a40;
+        }
+        
+        /* Estilos del pie de página */
+        .footer {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        /* Estilos del contenido principal */
+        .content {
+            margin-bottom: 60px;
+        }
+
+        /* Estilos para la información del usuario en la barra de navegación */
+        .user-info {
+            color: white;
+            margin-right: 15px;
+        }
+
+        /* Estilos para el menú desplegable */
+        .dropdown-menu {
+            min-width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <!-- Barra de navegación -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="Index.aspx">Mini Tienda</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <%-- Menú principal con elementos controlados por permisos --%>
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item" id="menuInicio" runat="server">
+                            <a class="nav-link" href="Index.aspx"><i class="fas fa-home"></i> Inicio</a>
+                        </li>
+                        <li class="nav-item" id="menuCategorias" runat="server">
+                            <a class="nav-link" href="WFCategories.aspx"><i class="fas fa-tags"></i> Categorías</a>
+                        </li>
+                        <li class="nav-item" id="menuProveedores" runat="server">
+                            <a class="nav-link" href="WFProviders.aspx"><i class="fas fa-truck"></i> Proveedores</a>
+                        </li>
+                        <li class="nav-item" id="menuProductos" runat="server">
+                            <a class="nav-link" href="WFProducts.aspx"><i class="fas fa-box-open"></i> Productos</a>
+                        </li>
+                        <li class="nav-item" id="menuUsuarios" runat="server">
+                            <a class="nav-link" href="WFUsers.aspx"><i class="fas fa-users"></i> Usuarios</a>
+                        </li>
+                    </ul>
+                    <%-- Información del usuario y menú desplegable --%>
+                    <div class="user-info d-flex align-items-center">
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-user-circle"></i> <asp:Label ID="lblCurrentUser" runat="server" Text="Usuario"></asp:Label>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                                <div class="dropdown-item">
+                                    <small>Rol: <asp:Label ID="lblCurrentRole" runat="server" Text="Rol"></asp:Label></small>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <asp:LinkButton ID="btnLogout" runat="server" CssClass="dropdown-item" OnClick="btnLogout_Click">
+                                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                                </asp:LinkButton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Contenido principal -->
+        <div class="container content">
+            <%-- ContentPlaceHolder para el contenido específico de cada página --%>
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+        
+        <!-- Pie de página -->
+        <footer class="footer text-center">
+            <div class="container">
+                <p>&copy; <%= DateTime.Now.Year %> - Mini Tienda</p>
+            </div>
+        </footer>
+    </form>
+    
+    <!-- Scripts de Bootstrap y jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html> 
