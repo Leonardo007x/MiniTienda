@@ -166,7 +166,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MiniTienda.Logic\MiniTienda.Logic.csproj">
       <Project>{34D2AB37-4DA0-489C-BF00-0B4237DFDE03}</Project>
-      <Name>MiniTienda.Logic</Name>
+      <n>MiniTienda.Logic</n>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
