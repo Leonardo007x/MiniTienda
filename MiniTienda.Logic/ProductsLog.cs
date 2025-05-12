@@ -69,7 +69,7 @@ namespace MiniTienda.Logic
             
             // Convertir decimal a double para compatibilidad
             double priceAsDouble = Convert.ToDouble(price);
-
+                
             return _productData.saveProducts(code, name, stock, priceAsDouble, categoryId, providerId);
         }
 

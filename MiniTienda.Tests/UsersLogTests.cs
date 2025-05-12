@@ -155,10 +155,11 @@ namespace MiniTienda.Tests
             int userId = 1; // Asegúrate de que este ID exista en tu BD de pruebas
             string name = "Usuario Actualizado";
             string email = "updated@example.com";
+            string password = "UpdatedPass123!";
             string role = "Administrador";
 
             // Act
-            bool result = _usersLog.UpdateUser(userId, name, email, role);
+            bool result = _usersLog.UpdateUser(userId, name, email, password, role);
 
             // Assert
             Assert.IsTrue(result);
@@ -174,10 +175,11 @@ namespace MiniTienda.Tests
             int userId = -1; // ID inválido
             string name = "Usuario Actualizado";
             string email = "updated@example.com";
+            string password = "UpdatedPass123!";
             string role = "Administrador";
 
             // Act
-            bool result = _usersLog.UpdateUser(userId, name, email, role);
+            bool result = _usersLog.UpdateUser(userId, name, email, password, role);
 
             // Assert
             Assert.IsFalse(result);
