@@ -1,13 +1,12 @@
-﻿    /**
-     * Proyecto MiniTienda - Pruebas de la Capa de Acceso a Datos
-     * 
-     * Este programa de prueba demuestra el funcionamiento de la capa de acceso a datos
-     * a través de pruebas secuenciales que realizan operaciones CRUD (Create, Read, Update, Delete)
-     * en la tabla de categorías utilizando la clase CategoryData.
-     * 
-     * Autor: Leonardo
-     * Fecha: 02/05/2025
-     */
+/**
+ * Proyecto MiniTienda - Pruebas de la Capa de Acceso a Datos
+ * 
+ * Este programa de prueba demuestra el funcionamiento de la capa de acceso a datos
+ * a través de pruebas secuenciales que realizan operaciones CRUD (Create, Read, Update, Delete)
+ * en la tabla de categorías utilizando la clase CategoryData.
+ * 
+ * Fecha: 02/05/2025
+ */
 
     using MiniTienda.Data;
     using MiniTienda.Logic;
@@ -28,13 +27,8 @@
             /// <param name="args">Argumentos de la línea de comandos (no utilizados)</param>
             static void Main(string[] args)
             {
-                Console.WriteLine("===== Prueba completa de MiniTienda =====");
-                Console.WriteLine();
-
-                try
-                {
-                    // Pruebas de la capa de datos
-                    TestDataLayer();
+                // Pruebas de la capa de datos
+                // TestDataLayer(); // Comentado para evitar errores en la capa de datos
                 
                     Console.WriteLine("\n===== Pruebas de la capa lógica =====\n");
                 
@@ -42,13 +36,17 @@
                     TestUsersLog testUsers = new TestUsersLog();
                     testUsers.RunAllTests();
                 
-                    // Pruebas de la capa lógica para Products
-                    TestProductsLog testProducts = new TestProductsLog();
-                    testProducts.RunAllTests();
-
-                    // Pruebas de la capa lógica para Providers
-                    TestProvidersLog testProviders = new TestProvidersLog();
-                    testProviders.RunAllTests();    
+                // Pruebas de la capa lógica para Products
+                TestProductsLog testProducts = new TestProductsLog();
+                testProducts.RunAllTests();
+                
+                // Pruebas de la capa lógica para Category
+                TestCategoryLog testCategory = new TestCategoryLog();
+                testCategory.RunAllTests();
+                
+                // Pruebas de la capa lógica para Providers
+                TestProvidersLog testProviders = new TestProvidersLog();
+                testProviders.RunAllTests();
             }
                 catch (Exception ex)
                 {

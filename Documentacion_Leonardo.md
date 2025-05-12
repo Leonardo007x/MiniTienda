@@ -8,7 +8,7 @@
 - Se configuró la cadena de conexión en App.config para conectarse a MySQL en localhost
 
 ### 2. Base de Datos
-- Se creó la base de datos "minitienda" en MySQL Server 8.0.42
+- Se creó la base de datos "minitiendaDB" en MySQL Server 8.0.42
 - Se ejecutó el script SQL para crear la tabla "tbl_categoria"
 - Se implementaron procedimientos almacenados para gestionar categorías:
   - sp_show_categories: Muestra todas las categorías

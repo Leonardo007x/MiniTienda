@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Proyecto MiniTienda - Capa de Acceso a Datos
  * 
  * Implementación del patrón DAO (Data Access Object) para la gestión de usuarios.
@@ -30,7 +30,7 @@ namespace MiniTienda.Data
 
         /// <summary>
         /// Obtiene todos los usuarios almacenados en la base de datos.
-        /// Ejecuta el procedimiento almacenado 'spSelectProvidersDDL'.
+        /// Ejecuta el procedimiento almacenado 'spSelectUsers'.
         /// </summary>
         /// <returns>DataSet con los usuarios</returns>
         public DataSet showUsers()
@@ -40,7 +40,7 @@ namespace MiniTienda.Data
 
             MySqlCommand objSelectCmd = new MySqlCommand();
             objSelectCmd.Connection = objPer.openConnection();
-            objSelectCmd.CommandText = "spSelectProvidersDDL";
+            objSelectCmd.CommandText = "spSelectUsers";
             objSelectCmd.CommandType = CommandType.StoredProcedure;
             objAdapter.SelectCommand = objSelectCmd;
             objAdapter.Fill(objData);
@@ -57,6 +57,7 @@ namespace MiniTienda.Data
         /// <param name="_salt">Salt para la contraseña</param>
         /// <param name="_state">Estado del usuario (activo/inactivo)</param>
         /// <returns>True si la operación fue exitosa, False en caso contrario</returns>
+
         public bool saveUsers(string _mail, string _password, string _salt, string _state)
         {
             bool executed = false;  // Variable que indica si la operación fue exitosa
@@ -118,7 +119,8 @@ namespace MiniTienda.Data
             objSelectCmd.CommandType = CommandType.StoredProcedure;
 
             // Agregar parámetros al comando, que serán enviados al procedimiento almacenado
-            objSelectCmd.Parameters.Add("p_id", MySqlDbType.Int32).Value = _id;              
+            // Nota: Se usa 'p_idspInsertCategory' para coincidir con el nombre del parámetro en el procedimiento almacenado
+            objSelectCmd.Parameters.Add("p_idspInsertCategory", MySqlDbType.Int32).Value = _id;              
             objSelectCmd.Parameters.Add("p_mail", MySqlDbType.VarString).Value = _mail;     
             objSelectCmd.Parameters.Add("p_password", MySqlDbType.VarString).Value = _password; 
             objSelectCmd.Parameters.Add("p_salt", MySqlDbType.VarString).Value = _salt;     
@@ -144,5 +146,6 @@ namespace MiniTienda.Data
             objPer.closeConnection();
             return executed;
         }
+
     }
 }

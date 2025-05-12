@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MiniTienda.Data\MiniTienda.Data.csproj" />
+    <ProjectReference Include="..\MiniTienda.Logic\MiniTienda.Logic.csproj" />
   </ItemGroup>
   
   <ItemGroup>
