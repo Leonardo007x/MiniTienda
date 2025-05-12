@@ -1920,7 +1920,8 @@
   "projectFileDependencyGroups": {
     ".NETStandard,Version=v2.0": [
       "MySql.Data >= 9.3.0",
-      "NETStandard.Library >= 2.0.3"
+      "NETStandard.Library >= 2.0.3",
+      "System.Configuration.ConfigurationManager >= 8.0.0"
     ]
   },
   "packageFolders": {
@@ -1930,11 +1931,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj",
+      "projectUniqueName": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj",
       "projectName": "MiniTienda.Data",
-      "projectPath": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj",
+      "projectPath": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj",
       "packagesPath": "C:\\Users\\Elkin yandun\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\MiniTienda.Data\\obj\\",
+      "outputPath": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Data\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1982,6 +1983,10 @@
             "target": "Package",
             "version": "[2.0.3, )",
             "autoReferenced": true
+          },
+          "System.Configuration.ConfigurationManager": {
+            "target": "Package",
+            "version": "[8.0.0, )"
           }
         },
         "imports": [
