@@ -10,8 +10,9 @@
  */
 
 using System;
-using System.Data;
+using System.Collections.Generic;
 using MiniTienda.Data;
+using System.Data;
 
 namespace MiniTienda.Logic
 {
@@ -21,90 +22,157 @@ namespace MiniTienda.Logic
     /// </summary>
     public class ProductsLog
     {
-        /// <summary>
-        /// Instancia de la clase ProductsData que proporciona acceso a los datos de productos
-        /// </summary>
-        ProductsData objPrep = new ProductsData();
+        private ProductsData _productData;
+        private CategoryData _categoryData;
+        private ProvidersData _providerData;
+
+        // Límites y constantes
+        private const int MAX_PRODUCT_NAME_LENGTH = 100;
+        private const decimal MAX_PRODUCT_PRICE = 1000000.00m;
+        private const int MAX_STOCK = 100000;
+
+        public ProductsLog()
+        {
+            _productData = new ProductsData();
+            _categoryData = new CategoryData();
+            _providerData = new ProvidersData();
+        }
 
         /// <summary>
         /// Obtiene todos los productos desde la capa de datos.
         /// </summary>
         /// <returns>DataSet con la información de los productos</returns>
-        public DataSet showProducts()
+        public DataSet GetProducts()
         {
-            return objPrep.showProducts();
+            return _productData.showProducts();
         }
 
         /// <summary>
         /// Guarda un nuevo producto en el sistema después de validar los datos.
         /// </summary>
-        /// <param name="_code">Código único del producto</param>
-        /// <param name="_description">Descripción del producto</param>
-        /// <param name="_quantity">Cantidad en inventario</param>
-        /// <param name="_price">Precio del producto</param>
-        /// <param name="_idCategory">ID de la categoría asociada</param>
-        /// <param name="_idProvider">ID del proveedor asociado</param>
+        /// <param name="name">Nombre del producto</param>
+        /// <param name="price">Precio del producto</param>
+        /// <param name="stock">Cantidad en inventario</param>
+        /// <param name="categoryId">ID de la categoría asociada</param>
+        /// <param name="providerId">ID del proveedor asociado</param>
         /// <returns>True si la operación fue exitosa, False en caso contrario o si los datos no son válidos</returns>
-        public bool saveProducts(string _code, string _description, int _quantity, double _price, int _idCategory, int _idProvider)
+        public bool SaveProduct(string name, decimal price, int stock, int categoryId, int providerId)
         {
-            // Validación de datos
-            if (string.IsNullOrEmpty(_code))
+            // Validación de datos básica
+            if (!ValidateProductData(name, price, stock, categoryId, providerId))
+            {
                 return false;
+            }
+
+            // Generar un código para el producto
+            string code = "PRD" + DateTime.Now.Ticks.ToString().Substring(10);
             
-            if (string.IsNullOrEmpty(_description))
-                return false;
-            
-            if (_quantity < 0)
-                return false;
-            
-            if (_price <= 0)
-                return false;
-            
-            if (_idCategory <= 0)
-                return false;
-            
-            if (_idProvider <= 0)
-                return false;
+            // Convertir decimal a double para compatibilidad
+            double priceAsDouble = Convert.ToDouble(price);
                 
-            return objPrep.saveProducts(_code, _description, _quantity, _price, _idCategory, _idProvider);
+            return _productData.saveProducts(code, name, stock, priceAsDouble, categoryId, providerId);
         }
 
         /// <summary>
         /// Actualiza los datos de un producto existente después de validar los datos.
         /// </summary>
-        /// <param name="_id">ID del producto a actualizar</param>
-        /// <param name="_code">Nuevo código del producto</param>
-        /// <param name="_description">Nueva descripción</param>
-        /// <param name="_quantity">Nueva cantidad en inventario</param>
-        /// <param name="_price">Nuevo precio</param>
-        /// <param name="_idCategory">Nueva categoría asociada</param>
-        /// <param name="_idProvider">Nuevo proveedor asociado</param>
+        /// <param name="productId">ID del producto a actualizar</param>
+        /// <param name="name">Nuevo nombre del producto</param>
+        /// <param name="price">Nuevo precio del producto</param>
+        /// <param name="stock">Nueva cantidad en inventario</param>
+        /// <param name="categoryId">Nueva categoría asociada</param>
+        /// <param name="providerId">Nuevo proveedor asociado</param>
         /// <returns>True si la operación fue exitosa, False en caso contrario o si los datos no son válidos</returns>
-        public bool updateProducts(int _id, string _code, string _description, int _quantity, double _price, int _idCategory, int _idProvider)
+        public bool UpdateProduct(int productId, string name, decimal price, int stock, int categoryId, int providerId)
         {
-            // Validación de datos
-            if (_id <= 0)
+            // Validación básica
+            if (productId <= 0 || !ValidateProductData(name, price, stock, categoryId, providerId))
+            {
                 return false;
-                
-            if (string.IsNullOrEmpty(_code))
-                return false;
+            }
+
+            // Generar un código para el producto actualizado
+            string code = "PRD" + DateTime.Now.Ticks.ToString().Substring(10);
             
-            if (string.IsNullOrEmpty(_description))
+            // Convertir decimal a double para compatibilidad
+            double priceAsDouble = Convert.ToDouble(price);
+
+            return _productData.updateProducts(productId, code, name, stock, priceAsDouble, categoryId, providerId);
+        }
+
+        // Método para validar todos los datos del producto
+        private bool ValidateProductData(string name, decimal price, int stock, int categoryId, int providerId)
+        {
+            // Validación del nombre
+            if (string.IsNullOrEmpty(name) || name.Length > MAX_PRODUCT_NAME_LENGTH)
+            {
                 return false;
+            }
             
-            if (_quantity < 0)
+            // Validación del precio
+            if (price <= 0 || price > MAX_PRODUCT_PRICE)
+            {
                 return false;
+            }
             
-            if (_price <= 0)
+            // Validación del stock
+            if (stock < 0 || stock > MAX_STOCK)
+            {
                 return false;
+            }
             
-            if (_idCategory <= 0)
+            // Validación de categoría y proveedor
+            if (!CategoryExists(categoryId) || !ProviderExists(providerId))
+            {
                 return false;
-            
-            if (_idProvider <= 0)
+            }
+
+            return true;
+        }
+
+        // Método para verificar si existe la categoría
+        private bool CategoryExists(int categoryId)
+        {
+            try
+            {
+                DataTable categories = _categoryData.ShowCategories();
+                foreach (DataRow row in categories.Rows)
+                {
+                    if (Convert.ToInt32(row["id"]) == categoryId)
+                    {
+                        return true;
+                    }
+                }
                 return false;
-                
-            return objPrep.updateProducts(_id, _code, _description, _quantity, _price, _idCategory, _idProvider);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        // Método para verificar si existe el proveedor
+        private bool ProviderExists(int providerId)
+        {
+            try
+            {
+                DataSet providers = _providerData.ShowProviders();
+                if (providers.Tables.Count > 0)
+                {
+                    foreach (DataRow row in providers.Tables[0].Rows)
+                    {
+                        if (Convert.ToInt32(row["prov_id"]) == providerId)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 } 

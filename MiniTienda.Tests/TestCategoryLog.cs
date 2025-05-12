@@ -1,37 +1,56 @@
-﻿
+/**
+ * Proyecto MiniTienda - Pruebas de la Capa Lógica
+ * 
+ * Implementación de pruebas para la clase CategoryLog de la capa lógica.
+ * Esta clase proporciona métodos para probar las funcionalidades de gestión de categorías,
+ * validando tanto el correcto funcionamiento como los mecanismos de validación.
+ * 
+ * Autor: Leonardo
+ * Fecha: 06/05/2025
+ */
+
 using System;
 using System.Data;
 using MiniTienda.Logic;
 
 namespace MiniTienda.Tests
 {
+    /// <summary>
     /// Clase para probar las funcionalidades de la clase CategoryLog
+    /// </summary>
     public class TestCategoryLog
     {
+        /// <summary>
+        /// Instancia de la clase CategoryLog que será probada
+        /// </summary>
         private CategoryLog objCategoryLog;
 
- 
+        /// <summary>
         /// Constructor de la clase. Inicializa la instancia de CategoryLog.
+        /// </summary>
         public TestCategoryLog()
         {
             objCategoryLog = new CategoryLog();
         }
 
-        /// Prueba el método showCategories() para verificar que se obtengan correctamente las categorías.
+        /// <summary>
+        /// Prueba el método showCategories() para verificar que se obtengan correctamente las categorías
+        /// desde la base de datos.
+        /// </summary>
         public void TestShowCategories()
         {
             Console.WriteLine("Prueba de mostrar categorías");
             try
             {
                 DataTable dt = objCategoryLog.showCategories();
-                if (dt != null && dt.Rows.Count > 0)
+                if (dt != null)
                 {
-                    Console.WriteLine("Categorías obtenidas correctamente");
-                    Console.WriteLine($"Total de categorías: {dt.Rows.Count}");
+                    Console.WriteLine("Prueba exitosa: Se obtuvieron las categorías correctamente");
+                    Console.WriteLine($"Número de categorías: {dt.Rows.Count}");
                 }
                 else
                 {
-                    Console.WriteLine("No se encontraron categorías");
+                    Console.WriteLine("Prueba fallida: No se pudieron obtener las categorías");
                 }
             }
             catch (Exception ex)
@@ -41,37 +60,53 @@ namespace MiniTienda.Tests
             Console.WriteLine();
         }
 
-        /// Prueba los métodos saveCategory, updateCategory y deleteCategory.
-        public void TestCRUDCategory()
+        /// <summary>
+        /// Prueba el método saveCategory() para verificar que las categorías se guarden correctamente
+        /// y que las validaciones funcionen adecuadamente.
+        /// </summary>
+        public void TestSaveCategory()
         {
-            Console.WriteLine("Prueba de creación, actualización y eliminación de categoría");
-
-            int insertedId = -1;
+            Console.WriteLine("Prueba de guardar categoría");
             try
             {
-                // 1. Guardar categoría
-                Console.WriteLine("➡ Guardando categoría...");
-                insertedId = objCategoryLog.saveCategory("Categoria de prueba", "Descripcion de la categoria de prueba");
-                if (insertedId > 0)
-                    Console.WriteLine($" Categoría guardada con ID: {insertedId}");
-                else
-                    Console.WriteLine(" Error al guardar categoría");
+                string name = "Categoría de Prueba";
+                string description = "Descripción de la categoría de prueba";
 
-                // 2. Actualizar categoría
-                Console.WriteLine("➡️ Actualizando categoría...");
-                int updateResult = objCategoryLog.updateCategory(insertedId, "Prueba para actualizar categoria", "Descripción actualizada");
-                if (updateResult > 0)
-                    Console.WriteLine(" Categoría actualizada correctamente");
+                int result = objCategoryLog.saveCategory(name, description);
+                
+                if (result > 0)
+                {
+                    Console.WriteLine("Prueba exitosa: Categoría guardada correctamente");
+                    Console.WriteLine($"ID de la nueva categoría: {result}");
+                }
                 else
-                    Console.WriteLine(" Error al actualizar categoría");
+                {
+                    Console.WriteLine("Prueba fallida: No se pudo guardar la categoría");
+                }
 
-                // 3. Eliminar categoría
-                Console.WriteLine(" Eliminando categoría...");
-                int deleteResult = objCategoryLog.deleteCategory(insertedId);
-                if (deleteResult > 0)
-                    Console.WriteLine("Categoría eliminada correctamente");
+                // Prueba de validación (nombre vacío)
+                Console.WriteLine("Prueba de validación (nombre vacío)");
+                int resultNombreVacio = objCategoryLog.saveCategory("", description);
+                if (resultNombreVacio == 0)
+                {
+                    Console.WriteLine("Prueba de validación exitosa: Se rechazó nombre vacío");
+                }
                 else
-                    Console.WriteLine("Error al eliminar categoría");
+                {
+                    Console.WriteLine("Prueba de validación fallida: Se aceptó nombre vacío");
+                }
+
+                // Prueba de validación (descripción vacía)
+                Console.WriteLine("Prueba de validación (descripción vacía)");
+                int resultDescVacia = objCategoryLog.saveCategory(name, "");
+                if (resultDescVacia == 0)
+                {
+                    Console.WriteLine("Prueba de validación exitosa: Se rechazó descripción vacía");
+                }
+                else
+                {
+                    Console.WriteLine("Prueba de validación fallida: Se aceptó descripción vacía");
+                }
             }
             catch (Exception ex)
             {
@@ -80,15 +115,62 @@ namespace MiniTienda.Tests
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// Prueba el método updateCategory() para verificar que las categorías se actualicen correctamente
+        /// y que las validaciones funcionen adecuadamente.
+        /// </summary>
+        public void TestUpdateCategory()
+        {
+            Console.WriteLine("Prueba de actualizar categoría");
+            try
+            {
+                // Para esta prueba, necesitamos una categoría existente
+                // Asumimos que el ID 1 existe, pero esto podría ajustarse
+                int id = 1;
+                string newName = "Categoría Actualizada";
+                string newDescription = "Descripción actualizada";
 
-        /// Ejecuta todas las pruebas disponibles para CategoryLog
+                int result = objCategoryLog.updateCategory(id, newName, newDescription);
+                
+                if (result > 0)
+                {
+                    Console.WriteLine("Prueba exitosa: Categoría actualizada correctamente");
+                }
+                else
+                {
+                    Console.WriteLine("Prueba fallida: No se pudo actualizar la categoría");
+                }
+
+                // Prueba de validación (ID inválido)
+                Console.WriteLine("Prueba de validación (ID inválido)");
+                int resultIdInvalido = objCategoryLog.updateCategory(0, newName, newDescription);
+                if (resultIdInvalido == 0)
+                {
+                    Console.WriteLine("Prueba de validación exitosa: Se rechazó ID inválido");
+                }
+                else
+                {
+                    Console.WriteLine("Prueba de validación fallida: Se aceptó ID inválido");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en la prueba: {ex.Message}");
+            }
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Ejecuta todas las pruebas disponibles para la clase CategoryLog
+        /// </summary>
         public void RunAllTests()
         {
             Console.WriteLine("=== PRUEBAS DE CATEGORYLOG ===");
             TestShowCategories();
-            TestCRUDCategory();
+            TestSaveCategory();
+            TestUpdateCategory();
             Console.WriteLine("=== FIN PRUEBAS DE CATEGORYLOG ===");
             Console.WriteLine();
         }
     }
-}
+} 

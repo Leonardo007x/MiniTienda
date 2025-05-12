@@ -55,13 +55,14 @@ namespace MiniTienda.Data
                         connection.Open();
                         Console.WriteLine($"Base de datos: {connection.Database}");
                         
-                        // Ejecutar el procedimiento almacenado spSelectCategory
-                        using (var command = new MySqlCommand("spSelectCategory", connection))
+                        // En lugar de usar el procedimiento almacenado que no devuelve el ID,
+                        // utilizamos una consulta directa para obtener id y descripción
+                        string query = "SELECT cat_id, cat_descripcion FROM tbl_categorias";
+                        
+                        using (var command = new MySqlCommand(query, connection))
                         {
-                            command.CommandType = CommandType.StoredProcedure;
-                            
                             // Imprimir la consulta SQL que estamos ejecutando
-                            Console.WriteLine($"Ejecutando procedimiento: spSelectCategory");
+                            Console.WriteLine($"Ejecutando consulta: {query}");
                             
                             // Preparar tabla para recibir los datos
                             var dataTable = new DataTable();
@@ -77,25 +78,18 @@ namespace MiniTienda.Data
                                 Console.WriteLine($"La consulta devolvió registros: {hasRows}");
                                 
                                 int rowCount = 0;
-                                int colIndex = 0;
-                                
-                                // Obtener el índice de la columna cat_descripcion
-                                if (hasRows)
-                                {
-                                    colIndex = reader.GetOrdinal("cat_descripcion");
-                                }
                                 
                                 while (reader.Read())
                                 {
                                     rowCount++;
                                     // Imprimir cada registro que estamos leyendo para diagnóstico
-                                    Console.WriteLine($"Leyendo registro: Descripcion={reader[colIndex]}");
+                                    Console.WriteLine($"Leyendo registro: ID={reader["cat_id"]}, Descripcion={reader["cat_descripcion"]}");
                                     
                                     // Crear una nueva fila y asignar valores con los nombres de columna que esperamos
                                     DataRow row = dataTable.NewRow();
-                                    // El procedimiento no devuelve el ID, por lo que usamos el rowCount como id temporal
-                                    row["id"] = rowCount;
-                                    row["description"] = reader[colIndex];
+                                    // Ahora usamos el ID real de la base de datos
+                                    row["id"] = reader["cat_id"];
+                                    row["description"] = reader["cat_descripcion"];
                                     dataTable.Rows.Add(row);
                                 }
                                 

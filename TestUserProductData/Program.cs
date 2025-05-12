@@ -6,12 +6,13 @@
  * (Create, Read, Update) funcionan correctamente con la base de datos.
  * 
  * Autor: Leonardo
- * Fecha: Mayo 2024
+ * Fecha: Mayo 2025 
  */
 
 using System;
 using System.Data;
 using MiniTienda.Data;
+using MiniTienda.Logic;
 
 namespace TestUserProductData
 {
@@ -105,7 +106,8 @@ namespace TestUserProductData
                 
                 foreach (DataRow row in users.Tables[0].Rows)
                 {
-                    Console.WriteLine($"ID: {row[0]}, Correo: {row[1]}, Estado: {row[3]}");
+                    // spSelectUsers devuelve usu_id, usu_correo, usu_contrasena, usu_salt, usu_estado
+                    Console.WriteLine($"ID: {row["usu_id"]}, Correo: {row["usu_correo"]}, Estado: {row["usu_estado"]}");
                 }
                 
                 Console.WriteLine("Prueba showUsers: EXITOSA ✓");
@@ -184,7 +186,8 @@ namespace TestUserProductData
                 Console.WriteLine("Usuarios disponibles:");
                 foreach (DataRow row in users.Tables[0].Rows)
                 {
-                    Console.WriteLine($"ID: {row[0]}, Correo: {row[1]}, Estado: {row[3]}");
+                    // spSelectUsers devuelve usu_id, usu_correo, usu_contrasena, usu_salt, usu_estado
+                    Console.WriteLine($"ID: {row["usu_id"]}, Correo: {row["usu_correo"]}, Estado: {row["usu_estado"]}");
                 }
                 
                 // Solicitar ID del usuario a actualizar
