@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MiniTienda.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8e57ffa0966c5f0108342722c509b97735a28ba5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c8ef9b03638f7b7eabfd77f132d4b698bbecff44")]
 [assembly: System.Reflection.AssemblyProductAttribute("MiniTienda.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MiniTienda.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
