@@ -246,5 +246,8 @@ namespace MiniTienda.Logic
 
             return hasUppercase && hasLowercase && hasDigit && hasSpecialChar;
         }
+
+
+
     }
 } 

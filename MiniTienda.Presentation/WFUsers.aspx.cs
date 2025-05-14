@@ -413,6 +413,87 @@ namespace MiniTienda.Presentation
                 ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
                     $"alert('Error al actualizar el usuario: {ex.Message.Replace("'", "\\'")}');", true);
             }
+
+
         }
+
+
+        // Instancia de la clase de lógica de usuarios
+        UsersLog objUse = new UsersLog();
+
+        // Variables privadas para el manejo de datos del usuario
+        private string _mail, _contraseña, _salt, _state, _encryptedPassword;
+        private int _id;
+        private bool executed = false;
+
+        /// <summary>
+        /// Evento que se ejecuta al cargar la página
+        /// </summary>
+        protected void Flage_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack) // Solo ejecuta esto si no es un postback
+            {
+                LblId.Visible = false; // Oculta el campo de ID
+                showUsers(); // Carga la lista de usuarios
+            }
+        }
+
+        /// <summary>
+        /// Método que muestra todos los usuarios en el GridView
+        /// </summary>
+        private void showUsers()
+        {
+            DataSet objData = new DataSet();               // Crea un nuevo dataset
+            objData = objUse.showUsers();                  // Llama a la lógica para obtener los usuarios
+            GVUsers.DataSource = objData;                  // Asigna los datos al GridView
+            GVUsers.DataBind();                            // Refresca el GridView
+        }
+
+        /// <summary>
+        /// Evento del botón Guardar
+        /// Guarda un nuevo usuario en la base de datos
+        /// </summary>
+        protected void BtnSave_Click(object sender, EventArgs e)
+        {
+            ICryptoService cryptoService = new PBKDF2();   // Instancia para cifrado
+
+            _mail = TBMail.Text;                           // Obtiene el correo
+            _contraseña = TBContrasena.Text;               // Obtiene la contraseña
+            _state = DDLState.SelectedValue;               // Obtiene el estado seleccionado
+            _salt = cryptoService.GenerateSalt();          // Genera el salt
+            _encryptedPassword = cryptoService.Compute(_contraseña); // Cifra la contraseña
+
+            // Guarda el usuario usando la lógica
+            executed = objUse.saveUsers(_mail, _encryptedPassword, _salt, _state);
+
+            if (executed)
+            {
+                LblMsj.Text = "Se guardó exitosamente";    // Mensaje de éxito
+                showUsers();                               // Actualiza el listado
+            }
+            else
+            {
+                LblMsj.Text = "Error al guardar";          // Mensaje de error
+            }
+        }
+
+        /// <summary>
+        /// Evento del botón Actualizar
+        /// (Aún por implementar)
+        /// </summary>
+        protected void BtnUpdate_Click(object sender, EventArgs e)
+        {
+            // TODO: Implementar lógica para actualizar un usuario
+        }
+
+        /// <summary>
+        /// Evento cuando se selecciona un elemento en el GridView
+        /// (Aún por implementar)
+        /// </summary>
+        protected void GVUsers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // TODO: Implementar lógica para cargar los datos seleccionados en los campos del formulario
+        }
+
     }
 } 

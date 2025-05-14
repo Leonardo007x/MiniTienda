@@ -10,6 +10,7 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <asp:Label ID="Label1" runat="server" Text="Bienvenidos"</asp:Label><br />
     <!-- Panel de bienvenida -->
     <div class="row">
         <div class="col-md-12 mb-4">

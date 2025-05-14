@@ -962,7 +962,7 @@
       },
       "MiniTienda.Logic/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v8.0",
+        "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
           "MiniTienda.Data": "1.0.0",
           "MySql.Data": "9.3.0"
