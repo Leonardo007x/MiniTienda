@@ -3,24 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A8D7FE12-08F3-45D3-9BE0-C3976C3CAD1A}|MiniTienda.Presentation\\MiniTienda.Presentation.csproj|c:\\users\\elkin yandun\\source\\repos\\leonardo007x\\minitienda\\minitienda.presentation\\wfusers.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
-      "RelativeMoniker": "D:0:0:{A8D7FE12-08F3-45D3-9BE0-C3976C3CAD1A}|MiniTienda.Presentation\\MiniTienda.Presentation.csproj|solutionrelative:minitienda.presentation\\wfusers.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
+      "AbsoluteMoniker": "D:0:0:{A8D7FE12-08F3-45D3-9BE0-C3976C3CAD1A}|MiniTienda.Presentation\\MiniTienda.Presentation.csproj|c:\\users\\elkin yandun\\source\\repos\\leonardo007x\\minitienda\\minitienda.presentation\\login.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A8D7FE12-08F3-45D3-9BE0-C3976C3CAD1A}|MiniTienda.Presentation\\MiniTienda.Presentation.csproj|solutionrelative:minitienda.presentation\\login.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A8D7FE12-08F3-45D3-9BE0-C3976C3CAD1A}|MiniTienda.Presentation\\MiniTienda.Presentation.csproj|c:\\users\\elkin yandun\\source\\repos\\leonardo007x\\minitienda\\minitienda.presentation\\wfusers.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A8D7FE12-08F3-45D3-9BE0-C3976C3CAD1A}|MiniTienda.Presentation\\MiniTienda.Presentation.csproj|solutionrelative:minitienda.presentation\\wfusers.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1A8487B6-E372-46CA-8E85-7C146C2E910C}|MiniTienda.Logic\\MiniTienda.Logic.csproj|c:\\users\\elkin yandun\\source\\repos\\leonardo007x\\minitienda\\minitienda.logic\\userslog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1A8487B6-E372-46CA-8E85-7C146C2E910C}|MiniTienda.Logic\\MiniTienda.Logic.csproj|solutionrelative:minitienda.logic\\userslog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A8D7FE12-08F3-45D3-9BE0-C3976C3CAD1A}|MiniTienda.Presentation\\MiniTienda.Presentation.csproj|c:\\users\\elkin yandun\\source\\repos\\leonardo007x\\minitienda\\minitienda.presentation\\index.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
-      "RelativeMoniker": "D:0:0:{A8D7FE12-08F3-45D3-9BE0-C3976C3CAD1A}|MiniTienda.Presentation\\MiniTienda.Presentation.csproj|solutionrelative:minitienda.presentation\\index.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A8D7FE12-08F3-45D3-9BE0-C3976C3CAD1A}|MiniTienda.Presentation\\MiniTienda.Presentation.csproj|c:\\users\\elkin yandun\\source\\repos\\leonardo007x\\minitienda\\minitienda.presentation\\wfproducts.aspx.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A8D7FE12-08F3-45D3-9BE0-C3976C3CAD1A}|MiniTienda.Presentation\\MiniTienda.Presentation.csproj|solutionrelative:minitienda.presentation\\wfproducts.aspx.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,8 +18,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Login.aspx.cs",
+              "DocumentMoniker": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Presentation\\Login.aspx.cs",
+              "RelativeDocumentMoniker": "MiniTienda.Presentation\\Login.aspx.cs",
+              "ToolTip": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Presentation\\Login.aspx.cs",
+              "RelativeToolTip": "MiniTienda.Presentation\\Login.aspx.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAACIAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-14T21:07:14.981Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
@@ -41,6 +42,14 @@
               "Name": "ST:129:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "WFUsers.aspx.cs",
@@ -48,70 +57,10 @@
               "RelativeDocumentMoniker": "MiniTienda.Presentation\\WFUsers.aspx.cs",
               "ToolTip": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Presentation\\WFUsers.aspx.cs",
               "RelativeToolTip": "MiniTienda.Presentation\\WFUsers.aspx.cs",
-              "ViewState": "AgIAAKUBAAAAAAAAAAAIwLkBAABAAAAAAAAAAA==",
+              "ViewState": "AgIAABAAAAAAAAAAAAAIwC0AAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-14T20:52:28.957Z",
+              "WhenOpened": "2025-05-14T21:08:07.995Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "UsersLog.cs",
-              "DocumentMoniker": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Logic\\UsersLog.cs",
-              "RelativeDocumentMoniker": "MiniTienda.Logic\\UsersLog.cs",
-              "ToolTip": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Logic\\UsersLog.cs",
-              "RelativeToolTip": "MiniTienda.Logic\\UsersLog.cs",
-              "ViewState": "AgIAAOIAAAAAAAAAAAAcwPgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-14T20:47:10.591Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "WFUsers.aspx",
-              "DocumentMoniker": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Presentation\\WFUsers.aspx",
-              "RelativeDocumentMoniker": "MiniTienda.Presentation\\WFUsers.aspx",
-              "ToolTip": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Presentation\\WFUsers.aspx",
-              "RelativeToolTip": "MiniTienda.Presentation\\WFUsers.aspx",
-              "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2025-05-14T20:36:12.386Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Index.aspx",
-              "DocumentMoniker": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Presentation\\Index.aspx",
-              "RelativeDocumentMoniker": "MiniTienda.Presentation\\Index.aspx",
-              "ToolTip": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Presentation\\Index.aspx",
-              "RelativeToolTip": "MiniTienda.Presentation\\Index.aspx",
-              "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2025-05-14T20:33:39.024Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "WFProducts.aspx.designer.cs",
-              "DocumentMoniker": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Presentation\\WFProducts.aspx.designer.cs",
-              "RelativeDocumentMoniker": "MiniTienda.Presentation\\WFProducts.aspx.designer.cs",
-              "ToolTip": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Presentation\\WFProducts.aspx.designer.cs",
-              "RelativeToolTip": "MiniTienda.Presentation\\WFProducts.aspx.designer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-13T20:33:38.202Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             }
           ]
         }

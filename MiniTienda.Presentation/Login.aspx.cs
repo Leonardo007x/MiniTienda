@@ -11,6 +11,8 @@ using System.Configuration;
 using MySql.Data.MySqlClient;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web.Security;
+using System.Web;
 
 namespace MiniTienda.Presentation
 {
@@ -27,10 +29,10 @@ namespace MiniTienda.Presentation
         protected void Page_Load(object sender, EventArgs e)
         {
             // Si el usuario ya está autenticado, redirigirlo a la página principal
-            if (Session["UserID"] != null)
-            {
-                Response.Redirect("~/Index.aspx");
-            }
+            Session.Abandon();
+            FormsAuthentication.SignOut();
+            HttpContext.Current.Response.Redirect("~/Index.aspx");
+            
         }
 
         /// <summary>
