@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "q4z5TwaGhzU=",
+  "dgSpecHash": "Ga+Gq/EHy/I=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\TestCategoryData\\TestCategoryData.csproj",
+  "projectFilePath": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\TestCategoryData\\TestCategoryData.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Elkin yandun\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",
     "C:\\Users\\Elkin yandun\\.nuget\\packages\\google.protobuf\\3.30.0\\google.protobuf.3.30.0.nupkg.sha512",

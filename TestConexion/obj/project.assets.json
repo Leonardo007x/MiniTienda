@@ -480,7 +480,8 @@
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
-          "MySql.Data": "9.3.0"
+          "MySql.Data": "9.3.0",
+          "System.Configuration.ConfigurationManager": "8.0.0"
         },
         "compile": {
           "bin/placeholder/MiniTienda.Data.dll": {}
@@ -1624,6 +1625,7 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "MiniTienda.Data >= 1.0.0",
+      "MySql.Data >= 9.3.0",
       "System.Configuration.ConfigurationManager >= 8.0.0"
     ]
   },
@@ -1634,11 +1636,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\TestConexion\\TestConexion.csproj",
+      "projectUniqueName": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\TestConexion\\TestConexion.csproj",
       "projectName": "TestConexion",
-      "projectPath": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\TestConexion\\TestConexion.csproj",
+      "projectPath": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\TestConexion\\TestConexion.csproj",
       "packagesPath": "C:\\Users\\Elkin yandun\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\TestConexion\\obj\\",
+      "outputPath": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\TestConexion\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1659,8 +1661,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj": {
-              "projectPath": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj"
+            "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj": {
+              "projectPath": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj"
             }
           }
         }
@@ -1681,6 +1683,10 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "MySql.Data": {
+            "target": "Package",
+            "version": "[9.3.0, )"
+          },
           "System.Configuration.ConfigurationManager": {
             "target": "Package",
             "version": "[8.0.0, )"
