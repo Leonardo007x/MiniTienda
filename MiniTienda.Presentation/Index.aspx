@@ -27,9 +27,8 @@
 
     <!-- Tarjetas de estadísticas -->
     <div class="row">
-        <!-- Tarjeta de categorías -->
         <div class="col-md-3 mb-4">
-            <div class="card bg-info text-white">
+            <div class="card bg-primary text-white">
                 <div class="card-body">
                     <h5 class="card-title">Categorías</h5>
                     <p class="card-text display-4 text-center"><asp:Label ID="lblCategories" runat="server" Text="0"></asp:Label></p>
@@ -37,8 +36,6 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Tarjeta de productos -->
         <div class="col-md-3 mb-4">
             <div class="card bg-success text-white">
                 <div class="card-body">
@@ -48,8 +45,6 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Tarjeta de proveedores -->
         <div class="col-md-3 mb-4">
             <div class="card bg-warning text-white">
                 <div class="card-body">
@@ -59,8 +54,6 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Tarjeta de usuarios -->
         <div class="col-md-3 mb-4">
             <div class="card bg-danger text-white">
                 <div class="card-body">

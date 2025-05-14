@@ -11,6 +11,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
+using MiniTienda.Logic;
 
 namespace MiniTienda.Presentation
 {
@@ -20,54 +21,59 @@ namespace MiniTienda.Presentation
     /// </summary>
     public partial class WFCategories : System.Web.UI.Page
     {
-        // Datos de muestra para mostrar en la vista
-        private DataTable categoriesTable;
+        // Objeto para acceder a la capa lógica de categorías
+        private CategoryLog categoryLogic = new CategoryLog();
 
         /// <summary>
         /// Método que se ejecuta cuando se carga la página
-        /// Inicializa los datos de muestra y configura la vista
+        /// Carga los datos desde la base de datos y configura la vista
         /// </summary>
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                CreateSampleData();
                 BindCategoriesGrid();
             }
         }
 
         /// <summary>
-        /// Método para crear datos de muestra para la demostración
-        /// En un sistema real, estos datos vendrían de la base de datos
-        /// </summary>
-        private void CreateSampleData()
-        {
-            categoriesTable = new DataTable();
-            categoriesTable.Columns.Add("CategoryID", typeof(int));
-            categoriesTable.Columns.Add("Name", typeof(string));
-            categoriesTable.Columns.Add("Description", typeof(string));
-
-            // Agregar algunas categorías de muestra
-            categoriesTable.Rows.Add(1, "Electrónicos", "Dispositivos electrónicos y accesorios");
-            categoriesTable.Rows.Add(2, "Ropa", "Ropa para hombres, mujeres y niños");
-            categoriesTable.Rows.Add(3, "Hogar", "Artículos para el hogar y decoración");
-            categoriesTable.Rows.Add(4, "Alimentos", "Productos alimenticios");
-            categoriesTable.Rows.Add(5, "Juguetes", "Juguetes para niños y adultos");
-
-            // Guardar la tabla en sesión
-            Session["Categories"] = categoriesTable;
-        }
-
-        /// <summary>
         /// Enlazar los datos a la cuadrícula (GridView)
-        /// Actualiza la vista con los datos más recientes
+        /// Actualiza la vista con los datos de la base de datos
         /// </summary>
         private void BindCategoriesGrid()
         {
-            if (Session["Categories"] != null)
+            try
             {
-                gvCategories.DataSource = Session["Categories"];
+                // Obtener categorías desde la capa lógica
+                DataTable categoriesTable = categoryLogic.showCategories();
+                
+                // Configurar tabla para el GridView
+                DataTable gridTable = new DataTable();
+                gridTable.Columns.Add("CategoryID", typeof(int));
+                gridTable.Columns.Add("Name", typeof(string));
+                
+                // Transformar datos del formato de la BD al formato del GridView
+                if (categoriesTable != null && categoriesTable.Rows.Count > 0)
+                {
+                    foreach (DataRow row in categoriesTable.Rows)
+                    {
+                        int id = Convert.ToInt32(row["id"]);
+                        string description = row["description"].ToString();
+                        
+                        // Usamos description como Name
+                        gridTable.Rows.Add(id, description);
+                    }
+                }
+                
+                // Asignar datos al GridView
+                gvCategories.DataSource = gridTable;
                 gvCategories.DataBind();
+            }
+            catch (Exception ex)
+            {
+                // Mostrar mensaje de error
+                ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                    $"alert('Error al cargar categorías: {ex.Message.Replace("'", "\\'")}');", true);
             }
         }
 
@@ -77,29 +83,47 @@ namespace MiniTienda.Presentation
         /// </summary>
         protected void btnSaveCategory_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(txtCategoryName.Text))
+            try
             {
-                DataTable dt = (DataTable)Session["Categories"];
-                
-                // Determinar el nuevo ID (en un sistema real se generaría por la base de datos)
-                int newId = 1;
-                if (dt.Rows.Count > 0)
+                if (!string.IsNullOrEmpty(txtCategoryName.Text))
                 {
-                    newId = dt.AsEnumerable().Max(row => row.Field<int>("CategoryID")) + 1;
+                    // Guardar categoría usando la capa lógica
+                    int result = categoryLogic.saveCategory(
+                        txtCategoryName.Text,
+                        txtCategoryName.Text  // Usamos el mismo valor para descripción
+                    );
+                    
+                    if (result > 0)
+                    {
+                        // Limpiar los controles
+                        txtCategoryName.Text = string.Empty;
+                        
+                        // Actualizar la vista
+                        BindCategoriesGrid();
+                        
+                        // Mostrar mensaje de éxito
+                        ScriptManager.RegisterStartupScript(this, GetType(), "SuccessMessage", 
+                            "alert('Categoría guardada exitosamente.');", true);
+                    }
+                    else
+                    {
+                        // Mostrar mensaje de error
+                        ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                            "alert('No se pudo guardar la categoría. Por favor intente nuevamente.');", true);
+                    }
                 }
-                
-                // Agregar la nueva categoría
-                dt.Rows.Add(newId, txtCategoryName.Text, txtCategoryDescription.Text);
-                
-                // Actualizar la sesión
-                Session["Categories"] = dt;
-                
-                // Actualizar la vista
-                BindCategoriesGrid();
-                
-                // Limpiar los controles
-                txtCategoryName.Text = string.Empty;
-                txtCategoryDescription.Text = string.Empty;
+                else
+                {
+                    // Mostrar mensaje de error si el nombre está vacío
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                        "alert('El nombre de la categoría es obligatorio.');", true);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Mostrar mensaje de error
+                ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                    $"alert('Error al guardar la categoría: {ex.Message.Replace("'", "\\'")}');", true);
             }
         }
 
@@ -118,24 +142,35 @@ namespace MiniTienda.Presentation
         /// </summary>
         protected void gvCategories_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
-            DataTable dt = (DataTable)Session["Categories"];
-            
-            // Obtener el ID de la categoría a eliminar
-            int categoryId = Convert.ToInt32(gvCategories.DataKeys[e.RowIndex].Value);
-            
-            // Encontrar la fila a eliminar
-            DataRow[] rows = dt.Select("CategoryID = " + categoryId);
-            if (rows.Length > 0)
+            try
             {
-                // Eliminar la fila
-                rows[0].Delete();
-                dt.AcceptChanges();
+                // Obtener el ID de la categoría a eliminar
+                int categoryId = Convert.ToInt32(gvCategories.DataKeys[e.RowIndex].Value);
                 
-                // Actualizar la sesión
-                Session["Categories"] = dt;
+                // Eliminar categoría usando la capa lógica
+                int result = categoryLogic.deleteCategory(categoryId);
                 
-                // Actualizar la vista
-                BindCategoriesGrid();
+                if (result > 0)
+                {
+                    // Actualizar la vista
+                    BindCategoriesGrid();
+                    
+                    // Mostrar mensaje de éxito
+                    ScriptManager.RegisterStartupScript(this, GetType(), "SuccessMessage", 
+                        "alert('Categoría eliminada exitosamente.');", true);
+                }
+                else
+                {
+                    // Mostrar mensaje de error
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                        "alert('No se pudo eliminar la categoría. Es posible que tenga productos asociados.');", true);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Mostrar mensaje de error
+                ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                    $"alert('Error al eliminar la categoría: {ex.Message.Replace("'", "\\'")}');", true);
             }
         }
 
@@ -165,32 +200,54 @@ namespace MiniTienda.Presentation
         /// </summary>
         protected void gvCategories_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
-            DataTable dt = (DataTable)Session["Categories"];
-            
-            // Obtener el ID de la categoría a actualizar
-            int categoryId = Convert.ToInt32(gvCategories.DataKeys[e.RowIndex].Value);
-            
-            // Obtener los nuevos valores
-            TextBox txtName = (TextBox)gvCategories.Rows[e.RowIndex].FindControl("txtName");
-            TextBox txtDescription = (TextBox)gvCategories.Rows[e.RowIndex].FindControl("txtDescription");
-            
-            // Encontrar la fila a actualizar
-            DataRow[] rows = dt.Select("CategoryID = " + categoryId);
-            if (rows.Length > 0)
+            try
             {
-                // Actualizar los valores
-                rows[0]["Name"] = txtName.Text;
-                rows[0]["Description"] = txtDescription.Text;
-                dt.AcceptChanges();
+                // Obtener el ID de la categoría a actualizar
+                int categoryId = Convert.ToInt32(gvCategories.DataKeys[e.RowIndex].Value);
                 
-                // Actualizar la sesión
-                Session["Categories"] = dt;
+                // Obtener los nuevos valores
+                TextBox txtName = (TextBox)gvCategories.Rows[e.RowIndex].FindControl("txtName");
                 
-                // Salir del modo de edición
-                gvCategories.EditIndex = -1;
-                
-                // Actualizar la vista
-                BindCategoriesGrid();
+                if (txtName != null && !string.IsNullOrEmpty(txtName.Text))
+                {
+                    // Actualizar categoría usando la capa lógica
+                    int result = categoryLogic.updateCategory(
+                        categoryId,
+                        txtName.Text,
+                        txtName.Text  // Usamos el mismo valor para nombre y descripción
+                    );
+                    
+                    if (result > 0)
+                    {
+                        // Salir del modo de edición
+                        gvCategories.EditIndex = -1;
+                        
+                        // Actualizar la vista
+                        BindCategoriesGrid();
+                        
+                        // Mostrar mensaje de éxito
+                        ScriptManager.RegisterStartupScript(this, GetType(), "SuccessMessage", 
+                            "alert('Categoría actualizada exitosamente.');", true);
+                    }
+                    else
+                    {
+                        // Mostrar mensaje de error
+                        ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                            "alert('No se pudo actualizar la categoría. Por favor intente nuevamente.');", true);
+                    }
+                }
+                else
+                {
+                    // Mostrar mensaje de error si el nombre está vacío
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                        "alert('El nombre de la categoría es obligatorio.');", true);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Mostrar mensaje de error
+                ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                    $"alert('Error al actualizar la categoría: {ex.Message.Replace("'", "\\'")}');", true);
             }
         }
     }

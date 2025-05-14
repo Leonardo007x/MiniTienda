@@ -59,9 +59,9 @@
                                 OnRowUpdating="gvProviders_RowUpdating"
                                 DataKeyNames="ProviderID">
                                 <Columns>
-                                    <!-- Columna para el ID (solo lectura) -->
+                                    <%-- Columna para el ID (solo lectura) --%>
                                     <asp:BoundField DataField="ProviderID" HeaderText="ID" ReadOnly="True" />
-                                    <!-- Columna para el nombre (editable) -->
+                                    <%-- Columna para el nombre (editable) --%>
                                     <asp:TemplateField HeaderText="Nombre">
                                         <ItemTemplate>
                                             <asp:Label ID="lblName" runat="server" Text='<%# Eval("Name") %>'></asp:Label>
@@ -70,7 +70,7 @@
                                             <asp:TextBox ID="txtName" runat="server" CssClass="form-control" Text='<%# Bind("Name") %>'></asp:TextBox>
                                         </EditItemTemplate>
                                     </asp:TemplateField>
-                                    <!-- Columna para el NIT (editable) -->
+                                    <%-- Columna para el NIT (editable) --%>
                                     <asp:TemplateField HeaderText="NIT">
                                         <ItemTemplate>
                                             <asp:Label ID="lblDescription" runat="server" Text='<%# Eval("Description") %>'></asp:Label>
@@ -79,9 +79,9 @@
                                             <asp:TextBox ID="txtDescription" runat="server" CssClass="form-control" Text='<%# Bind("Description") %>'></asp:TextBox>
                                         </EditItemTemplate>
                                     </asp:TemplateField>
-                                    <!-- Botones de edición -->
+                                    <%-- Botones de edición --%>
                                     <asp:CommandField ShowEditButton="True" ButtonType="Button" EditText="Editar" UpdateText="Actualizar" CancelText="Cancelar" ControlStyle-CssClass="btn btn-sm btn-info" />
-                                    <!-- Botón de eliminación -->
+                                    <%-- Botón de eliminación --%>
                                     <asp:TemplateField>
                                         <ItemTemplate>
                                             <asp:Button ID="btnDelete" runat="server" CommandName="Delete" Text="Eliminar" CssClass="btn btn-sm btn-danger" 
@@ -89,7 +89,7 @@
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                 </Columns>
-                                <!-- Plantilla para cuando no hay datos -->
+                                <%-- Plantilla para cuando no hay datos --%>
                                 <EmptyDataTemplate>
                                     <div class="alert alert-info">
                                         No hay proveedores registrados.

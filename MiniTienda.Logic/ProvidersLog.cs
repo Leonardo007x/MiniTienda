@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Proyecto MiniTienda - Capa Lógica de Negocio
  * 
  * Implementación de la lógica de negocio para la gestión de proveedores.
@@ -77,6 +77,7 @@ namespace MiniTienda.Logic
         /// <param name="name">Nuevo nombre</param>
         /// <returns>True si la operación fue exitosa, False en caso contrario</returns>
         /// <exception cref="ArgumentException">Se lanza si el ID no es válido o el nombre está vacío</exception>
+
         public bool UpdateProvider(int id, string nit, string name)
         {
             if (id <= 0)

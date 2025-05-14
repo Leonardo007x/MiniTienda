@@ -21,12 +21,8 @@
                     <div class="card-body">
                         <div class="form-row mb-3">
                             <!-- Campo para el nombre de la categoría -->
-                            <div class="col-md-3">
+                            <div class="col-md-10">
                                 <asp:TextBox ID="txtCategoryName" runat="server" CssClass="form-control" placeholder="Nombre de categoría"></asp:TextBox>
-                            </div>
-                            <!-- Campo para la descripción de la categoría -->
-                            <div class="col-md-7">
-                                <asp:TextBox ID="txtCategoryDescription" runat="server" CssClass="form-control" placeholder="Descripción"></asp:TextBox>
                             </div>
                             <!-- Botón para guardar la categoría -->
                             <div class="col-md-2">
@@ -57,9 +53,9 @@
                                 OnRowUpdating="gvCategories_RowUpdating"
                                 DataKeyNames="CategoryID">
                                 <Columns>
-                                    <!-- Columna para el ID (solo lectura) -->
+                                    <%-- Columna para el ID (solo lectura) --%>
                                     <asp:BoundField DataField="CategoryID" HeaderText="ID" ReadOnly="True" />
-                                    <!-- Columna para el nombre (editable) -->
+                                    <%-- Columna para el nombre (editable) --%>
                                     <asp:TemplateField HeaderText="Nombre">
                                         <ItemTemplate>
                                             <asp:Label ID="lblName" runat="server" Text='<%# Eval("Name") %>'></asp:Label>
@@ -68,18 +64,9 @@
                                             <asp:TextBox ID="txtName" runat="server" CssClass="form-control" Text='<%# Bind("Name") %>'></asp:TextBox>
                                         </EditItemTemplate>
                                     </asp:TemplateField>
-                                    <!-- Columna para la descripción (editable) -->
-                                    <asp:TemplateField HeaderText="Descripción">
-                                        <ItemTemplate>
-                                            <asp:Label ID="lblDescription" runat="server" Text='<%# Eval("Description") %>'></asp:Label>
-                                        </ItemTemplate>
-                                        <EditItemTemplate>
-                                            <asp:TextBox ID="txtDescription" runat="server" CssClass="form-control" Text='<%# Bind("Description") %>'></asp:TextBox>
-                                        </EditItemTemplate>
-                                    </asp:TemplateField>
-                                    <!-- Botones de edición -->
+                                    <%-- Botones de edición --%>
                                     <asp:CommandField ShowEditButton="True" ButtonType="Button" EditText="Editar" UpdateText="Actualizar" CancelText="Cancelar" ControlStyle-CssClass="btn btn-sm btn-info" />
-                                    <!-- Botón de eliminación -->
+                                    <%-- Botón de eliminación --%>
                                     <asp:TemplateField>
                                         <ItemTemplate>
                                             <asp:Button ID="btnDelete" runat="server" CommandName="Delete" Text="Eliminar" CssClass="btn btn-sm btn-danger" 
@@ -87,7 +74,7 @@
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                 </Columns>
-                                <!-- Plantilla para cuando no hay datos -->
+                                <%-- Plantilla para cuando no hay datos --%>
                                 <EmptyDataTemplate>
                                     <div class="alert alert-info">
                                         No hay categorías registradas.
