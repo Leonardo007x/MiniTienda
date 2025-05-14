@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\TestConexion\\TestConexion.csproj": {}
+    "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\TestConexion\\TestConexion.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj": {
+    "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj",
+        "projectUniqueName": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj",
         "projectName": "MiniTienda.Data",
-        "projectPath": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj",
+        "projectPath": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj",
         "packagesPath": "C:\\Users\\Elkin yandun\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\MiniTienda.Data\\obj\\",
+        "outputPath": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -59,6 +59,10 @@
               "target": "Package",
               "version": "[2.0.3, )",
               "autoReferenced": true
+            },
+            "System.Configuration.ConfigurationManager": {
+              "target": "Package",
+              "version": "[8.0.0, )"
             }
           },
           "imports": [
@@ -76,14 +80,14 @@
         }
       }
     },
-    "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\TestConexion\\TestConexion.csproj": {
+    "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\TestConexion\\TestConexion.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\TestConexion\\TestConexion.csproj",
+        "projectUniqueName": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\TestConexion\\TestConexion.csproj",
         "projectName": "TestConexion",
-        "projectPath": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\TestConexion\\TestConexion.csproj",
+        "projectPath": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\TestConexion\\TestConexion.csproj",
         "packagesPath": "C:\\Users\\Elkin yandun\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\TestConexion\\obj\\",
+        "outputPath": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\TestConexion\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -104,8 +108,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj": {
-                "projectPath": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj"
+              "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj": {
+                "projectPath": "C:\\Users\\Elkin yandun\\source\\repos\\Leonardo007x\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj"
               }
             }
           }
@@ -126,6 +130,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[9.3.0, )"
+            },
             "System.Configuration.ConfigurationManager": {
               "target": "Package",
               "version": "[8.0.0, )"

@@ -10,7 +10,8 @@
       "MiniTienda.Data/1.0.0": {
         "dependencies": {
           "MySql.Data": "9.3.0",
-          "NETStandard.Library": "2.0.3"
+          "NETStandard.Library": "2.0.3",
+          "System.Configuration.ConfigurationManager": "8.0.0"
         },
         "runtime": {
           "MiniTienda.Data.dll": {}
