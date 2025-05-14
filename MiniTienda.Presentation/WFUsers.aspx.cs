@@ -31,6 +31,11 @@ namespace MiniTienda.Presentation
         /// </summary>
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack) // Solo ejecuta esto si no es un postback
+            {
+                LblId.Visible = false; // Oculta el campo de ID
+                showUsers(); // Carga la lista de usuarios
+            }
             try
             {
                 // Registrar acceso a la página
