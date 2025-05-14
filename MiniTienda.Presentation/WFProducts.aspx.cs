@@ -1,7 +1,8 @@
 /*
  * WFProducts.aspx.cs
- * Controlador para la página de gestión de categorías
- * Implementa la funcionalidad para crear, editar y eliminar categorías de productos
+ * Controlador para la página de gestión de productos
+ * Implementa la funcionalidad para crear, editar y eliminar productos
+ * Desarrollado por: Elkin
  */
 
 using System;
@@ -11,137 +12,643 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
+using MiniTienda.Logic;
 
 namespace MiniTienda.Presentation
 {
+    /// <summary>
+    /// Clase que gestiona la funcionalidad de la página de productos.
+    /// Permite realizar operaciones CRUD sobre los productos.
+    /// </summary>
     public partial class WFProducts : System.Web.UI.Page
     {
-        // Instancias de las clases lógicas que se encargan de manejar los productos, categorías y proveedores
-        ProductsLog objPro = new ProductsLog();
-        CategoryLog objCat = new CategoryLog();
-        ProvidersLog objPrv = new ProvidersLog();
+        // Objeto para acceder a la capa lógica de productos
+        private ProductsLog productsLogic = new ProductsLog();
+        // Objeto para acceder a la capa lógica de categorías
+        private CategoryLog categoryLogic = new CategoryLog();
+        // Objeto para acceder a la capa lógica de proveedores
+        private ProvidersLog providersLogic = new ProvidersLog();
 
-        // Variables para almacenar información del producto
-        private string _code, _description;
-        private int _id, _quantity, _fkCategory, _fkProduct;
-        private double _price;
-        private bool executed = false;
-
-        // Evento que se ejecuta al cargar la página
+        /// <summary>
+        /// Método que se ejecuta cuando se carga la página
+        /// Carga los datos desde la base de datos y configura la vista
+        /// </summary>
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Si no es un postback, se cargan los productos, categorías y proveedores en sus respectivos controles
-            if (!Page.IsPostBack)
+            if (!IsPostBack)
             {
-                showProducts();
-                showCategoriesDDL();
-                showProvidersDDL();
+                LoadCategoriesDropDown();
+                LoadProvidersDropDown();
+                BindProductsGrid();
             }
         }
 
-        // Método para cargar los productos en el GridView
-        private void showProducts()
+        /// <summary>
+        /// Cargar el DropDownList de categorías con los datos de la base de datos
+        /// </summary>
+        private void LoadCategoriesDropDown()
         {
-            DataSet objData = new DataSet();
-            objData = objPro.showProducts(); // Llama al método que retorna los productos
-            GVProducts.DataSource = objData;
-            GVProducts.DataBind(); // Vuelve a enlazar los datos
-        }
-
-        // Método para llenar el DropDownList de categorías
-        private void showCategoriesDDL()
-        {
-            DDLCategories.DataSource = objCat.showCategories();
-            DDLCategories.DataValueField = "cat_id"; // Campo que se usará como valor
-            DDLCategories.DataTextField = "cat_descripcion"; // Campo visible al usuario
-            DDLCategories.DataBind();
-            DDLCategories.Items.Insert(0, "Seleccione"); // Inserta una opción inicial
-        }
-
-        // Método para llenar el DropDownList de proveedores
-        private void showProvidersDDL()
-        {
-            DDLProviders.DataSource = objPrv.showProvidersDDL();
-            DDLProviders.DataValueField = "prov_id";
-            DDLProviders.DataTextField = "prov_nombre";
-            DDLProviders.DataBind();
-            DDLProviders.Items.Insert(0, "Seleccione");
-        }
-
-        // Evento que oculta columnas del GridView que no se desean mostrar
-        protected void GVProducts_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            // Oculta las columnas con índices 1, 6 y 8 en el encabezado y en cada fila
-            if (e.Row.RowType == DataControlRowType.Header || e.Row.RowType == DataControlRowType.DataRow)
+            try
             {
-                e.Row.Cells[1].Visible = false;
-                e.Row.Cells[6].Visible = false;
-                e.Row.Cells[8].Visible = false;
+                DataTable categoriesTable = categoryLogic.showCategories();
+                
+                // Configurar el DropDownList
+                ddlCategory.DataSource = categoriesTable;
+                ddlCategory.DataTextField = "description";
+                ddlCategory.DataValueField = "id";
+                ddlCategory.DataBind();
+
+                // Agregar la opción por defecto
+                ddlCategory.Items.Insert(0, new ListItem("-- Seleccione una categoría --", "0"));
+            }
+            catch (Exception ex)
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                    $"alert('Error al cargar categorías: {ex.Message.Replace("'", "\\'")}');", true);
             }
         }
 
-        // Evento del botón Guardar
-        protected void BtnSave_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Cargar el DropDownList de proveedores con los datos de la base de datos
+        /// </summary>
+        private void LoadProvidersDropDown()
         {
-            // Obtiene los valores de los controles
-            _code = TBCode.Text;
-            _description = TBDescription.Text;
-            _quantity = Convert.ToInt32(TBQuantity.Text);
-            _price = Convert.ToDouble(TBPrice.Text);
-            _fkCategory = Convert.ToInt32(DDLCategories.SelectedValue);
-            _fkProduct = Convert.ToInt32(DDLProviders.SelectedValue);
-
-            // Llama al método para guardar y almacena el resultado
-            executed = objPro.saveProducts(_code, _description, _quantity, _price, _fkCategory, _fkProduct);
-
-            if (executed)
+            try
             {
-                LblMsg.Text = "Se guardó exitosamente";
-                showProducts(); // Recarga la lista de productos
+                // Obtener proveedores desde la capa lógica
+                DataSet ds = providersLogic.ShowProviders();
+                
+                // Configurar tabla para el DropDownList
+                DataTable providersTable = new DataTable();
+                providersTable.Columns.Add("ProviderID", typeof(int));
+                providersTable.Columns.Add("Name", typeof(string));
+                
+                // Transformar datos del formato de la BD al formato del DropDownList
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        int id = Convert.ToInt32(row["prov_id"]);
+                        string name = row["prov_nombre"].ToString();
+                        
+                        providersTable.Rows.Add(id, name);
+                    }
+                }
+                
+                // Configurar el DropDownList
+                ddlProvider.DataSource = providersTable;
+                ddlProvider.DataTextField = "Name";
+                ddlProvider.DataValueField = "ProviderID";
+                ddlProvider.DataBind();
+                
+                // Agregar la opción por defecto
+                ddlProvider.Items.Insert(0, new ListItem("-- Seleccione un proveedor --", "0"));
             }
-            else
+            catch (Exception ex)
             {
-                LblMsg.Text = "Error al guardar";
+                ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                    $"alert('Error al cargar proveedores: {ex.Message.Replace("'", "\\'")}');", true);
             }
         }
 
-        // Evento del botón Actualizar
-        protected void BtnUpdate_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Enlazar los datos a la cuadrícula (GridView)
+        /// Actualiza la vista con los datos de la base de datos
+        /// </summary>
+        private void BindProductsGrid()
         {
-            // Obtiene los valores del formulario
-            _id = Convert.ToInt32(TBId.Text);
-            _code = TBCode.Text;
-            _description = TBDescription.Text;
-            _quantity = Convert.ToInt32(TBQuantity.Text);
-            _price = Convert.ToDouble(TBPrice.Text);
-            _fkCategory = Convert.ToInt32(DDLCategories.SelectedValue);
-            _fkProduct = Convert.ToInt32(DDLProviders.SelectedValue);
-
-            // Llama al método para actualizar y almacena el resultado
-            executed = objPro.updateProducts(_id, _code, _description, _quantity, _price, _fkCategory, _fkProduct);
-
-            if (executed)
+            try
             {
-                LblMsg.Text = "Se actualizó exitosamente";
-                showProducts(); // Recarga los productos
+                // Registrar información de diagnóstico
+                System.Diagnostics.Debug.WriteLine("Iniciando carga de productos desde la base de datos");
+                
+                // Obtener productos desde la capa lógica
+                DataSet ds = productsLogic.GetProducts();
+                System.Diagnostics.Debug.WriteLine($"DataSet recibido: {(ds != null ? "No es nulo" : "Es nulo")}");
+                if (ds != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Cantidad de tablas: {ds.Tables.Count}");
+                    if (ds.Tables.Count > 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Cantidad de filas en tabla 0: {ds.Tables[0].Rows.Count}");
+                        
+                        // Usar un enfoque alternativo para listar las columnas
+                        List<string> columnNames = new List<string>();
+                        foreach (DataColumn col in ds.Tables[0].Columns)
+                        {
+                            columnNames.Add(col.ColumnName);
+                        }
+                        System.Diagnostics.Debug.WriteLine($"Columnas en tabla 0: {string.Join(", ", columnNames)}");
+                    }
             }
-            else
+
+                // Crear una tabla con estructura idéntica a la base de datos para diagnóstico
+                DataTable rawTable = new DataTable();
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    rawTable = ds.Tables[0].Copy();
+                    System.Diagnostics.Debug.WriteLine($"Tabla copiada con {rawTable.Rows.Count} filas");
+                }
+                
+                // Configurar tabla para el GridView
+                DataTable productsTable = new DataTable();
+            productsTable.Columns.Add("ProductID", typeof(int));
+            productsTable.Columns.Add("Name", typeof(string));
+            productsTable.Columns.Add("Price", typeof(decimal));
+            productsTable.Columns.Add("CategoryID", typeof(int));
+            productsTable.Columns.Add("CategoryName", typeof(string));
+            productsTable.Columns.Add("ProviderID", typeof(int));
+            productsTable.Columns.Add("ProviderName", typeof(string));
+
+                // Transformar datos del formato de la BD al formato del GridView
+                // Según la captura: pro_id, pro_codigo, pro_descripcion, pro_cantidad, pro_precio, tbl_categorias_cat_id, tbl_proveedores_prov_id
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        try
+                        {
+                            // Registrar toda la fila para diagnóstico
+                            System.Diagnostics.Debug.WriteLine("Contenido completo de la fila del producto:");
+                            foreach (DataColumn col in row.Table.Columns)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"   {col.ColumnName}: {row[col]}");
+                            }
+                            
+                            // Variables para almacenar los datos del producto
+                            int id = 0;
+                            string name = "Sin nombre";
+                            decimal price = 0;
+                            int categoryId = 0;
+                            string categoryName = "Sin categoría";
+                            int providerId = 0;
+                            string providerName = "Sin proveedor";
+                            
+                            // Intentar obtener el ID con diferentes nombres de columna posibles
+                            if (row.Table.Columns.Contains("pro_id"))
+                            {
+                                id = row["pro_id"] != DBNull.Value ? Convert.ToInt32(row["pro_id"]) : 0;
+                                System.Diagnostics.Debug.WriteLine($"ID obtenido de pro_id: {id}");
+                            }
+                            else
+                            {
+                                System.Diagnostics.Debug.WriteLine("La columna pro_id no existe en el resultado");
+                                
+                                // Buscar cualquier columna que pueda contener un ID
+                                foreach (DataColumn col in row.Table.Columns)
+                                {
+                                    if (col.ColumnName.EndsWith("_id") || col.ColumnName.StartsWith("id"))
+                                    {
+                                        id = row[col] != DBNull.Value ? Convert.ToInt32(row[col]) : 0;
+                                        System.Diagnostics.Debug.WriteLine($"ID obtenido de columna alternativa {col.ColumnName}: {id}");
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            // Obtener descripción/nombre del producto
+                            if (row.Table.Columns.Contains("pro_descripcion"))
+                            {
+                                name = row["pro_descripcion"] != DBNull.Value ? row["pro_descripcion"].ToString() : "Sin nombre";
+        }
+
+                            // Obtener precio del producto
+                            if (row.Table.Columns.Contains("pro_precio"))
+                            {
+                                price = row["pro_precio"] != DBNull.Value ? Convert.ToDecimal(row["pro_precio"]) : 0;
+                            }
+                            
+                            // Obtener categoría ID
+                            if (row.Table.Columns.Contains("tbl_categorias_cat_id"))
+                            {
+                                categoryId = row["tbl_categorias_cat_id"] != DBNull.Value ? Convert.ToInt32(row["tbl_categorias_cat_id"]) : 0;
+                            }
+                            
+                            // Obtener nombre de categoría
+                            if (row.Table.Columns.Contains("cat_descripcion"))
+        {
+                                categoryName = row["cat_descripcion"] != DBNull.Value ? row["cat_descripcion"].ToString() : "Sin categoría";
+                            }
+                            else
+                            {
+                                // Si no está en el resultado, búscalo desde la capa lógica
+                                DataTable categories = categoryLogic.showCategories();
+                                if (categories != null && categoryId > 0)
+                                {
+                                    foreach (DataRow catRow in categories.Rows)
+                                    {
+                                        if (Convert.ToInt32(catRow["id"]) == categoryId)
+                                        {
+                                            categoryName = catRow["description"].ToString();
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // Obtener proveedor ID
+                            if (row.Table.Columns.Contains("tbl_proveedores_prov_id"))
+                            {
+                                providerId = row["tbl_proveedores_prov_id"] != DBNull.Value ? Convert.ToInt32(row["tbl_proveedores_prov_id"]) : 0;
+        }
+
+                            // Obtener nombre de proveedor
+                            if (row.Table.Columns.Contains("prov_nombre"))
+                            {
+                                providerName = row["prov_nombre"] != DBNull.Value ? row["prov_nombre"].ToString() : "Sin proveedor";
+                            }
+                            else
+                            {
+                                // Si no está en el resultado, búscalo desde la capa lógica
+                                DataSet providers = providersLogic.ShowProviders();
+                                if (providers != null && providers.Tables.Count > 0 && providerId > 0)
+                                {
+                                    foreach (DataRow provRow in providers.Tables[0].Rows)
+                                    {
+                                        if (Convert.ToInt32(provRow["prov_id"]) == providerId)
+        {
+                                            providerName = provRow["prov_nombre"].ToString();
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // Registrar información del producto que se añadirá al GridView
+                            System.Diagnostics.Debug.WriteLine($"Añadiendo producto: ID={id}, Nombre={name}, Precio={price}, " +
+                                $"CategoríaID={categoryId}, CategoríaNombre={categoryName}, " +
+                                $"ProveedorID={providerId}, ProveedorNombre={providerName}");
+                            
+                            // Añadir los datos a la tabla que usa el GridView
+                            productsTable.Rows.Add(id, name, price, categoryId, categoryName, providerId, providerName);
+        }
+                        catch (Exception ex)
+                        {
+                            // Registrar detalles específicos del error para esta fila
+                            System.Diagnostics.Debug.WriteLine($"Error al procesar fila de producto: {ex.Message}");
+                            
+                            // Listar las columnas disponibles
+                            List<string> columnNames = new List<string>();
+                            foreach (DataColumn col in row.Table.Columns)
+                            {
+                                columnNames.Add(col.ColumnName);
+                            }
+                            System.Diagnostics.Debug.WriteLine($"Columnas disponibles: {string.Join(", ", columnNames)}");
+                            
+                            // Listar los valores de la fila
+                            List<string> values = new List<string>();
+                            foreach (var item in row.ItemArray)
+                            {
+                                values.Add(item?.ToString() ?? "null");
+                            }
+                            System.Diagnostics.Debug.WriteLine($"Valores: {string.Join(", ", values)}");
+                        }
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("No se encontraron productos en la base de datos o la consulta no devolvió resultados");
+                }
+                
+                // Asignar datos al GridView
+                gvProducts.DataSource = productsTable;
+                gvProducts.DataBind();
+                
+                // Registrar cantidad final de productos en la tabla
+                System.Diagnostics.Debug.WriteLine($"Total de productos cargados en el GridView: {productsTable.Rows.Count}");
+            }
+            catch (Exception ex)
             {
-                LblMsg.Text = "Error al actualizar";
+                // Registrar el error detallado
+                System.Diagnostics.Debug.WriteLine($"Error al cargar productos: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error interno: {ex.InnerException.Message}");
+                }
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                
+                // Mostrar mensaje de error más detallado para diagnóstico
+                ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                    $"alert('Error al cargar productos: {ex.Message.Replace("'", "\\'")}\\n" +
+                    $"Revise los logs para más detalles.');", true);
             }
         }
 
-        // Evento que se ejecuta al seleccionar un registro en el GridView
-        protected void GVProducts_SelectedIndexChanged(object sender, EventArgs e)
+        /// <summary>
+        /// Guardar un nuevo producto
+        /// Se ejecuta cuando el usuario hace clic en el botón "Guardar"
+        /// </summary>
+        protected void btnSaveProduct_Click(object sender, EventArgs e)
         {
-            // Asigna los valores seleccionados a los controles del formulario
-            TBId.Text = GVProducts.SelectedRow.Cells[1].Text;
-            TBCode.Text = GVProducts.SelectedRow.Cells[2].Text;
-            TBDescription.Text = GVProducts.SelectedRow.Cells[3].Text;
-            TBQuantity.Text = GVProducts.SelectedRow.Cells[4].Text;
-            TBPrice.Text = GVProducts.SelectedRow.Cells[5].Text;
-            DDLCategories.SelectedValue = GVProducts.SelectedRow.Cells[6].Text;
-            DDLProviders.SelectedValue = GVProducts.SelectedRow.Cells[8].Text;
+            try
+            {
+                // Registrar inicio de operación
+                System.Diagnostics.Debug.WriteLine("Iniciando guardado de producto");
+                System.Diagnostics.Debug.WriteLine($"Nombre: {txtProductName.Text}");
+                System.Diagnostics.Debug.WriteLine($"Precio: {txtProductPrice.Text}");
+                System.Diagnostics.Debug.WriteLine($"Categoría seleccionada: {ddlCategory.SelectedValue} (índice: {ddlCategory.SelectedIndex})");
+                System.Diagnostics.Debug.WriteLine($"Proveedor seleccionado: {ddlProvider.SelectedValue} (índice: {ddlProvider.SelectedIndex})");
+                
+            if (!string.IsNullOrEmpty(txtProductName.Text) && 
+                !string.IsNullOrEmpty(txtProductPrice.Text) && 
+                ddlCategory.SelectedIndex > 0 && 
+                ddlProvider.SelectedIndex > 0)
+            {
+                    decimal price;
+                    if (!decimal.TryParse(txtProductPrice.Text, out price) || price <= 0)
+                    {
+                        ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                            "alert('El precio debe ser un número positivo.');", true);
+                        return;
+                    }
+                    
+                    // Por defecto, usamos un stock inicial de 10 para nuevos productos
+                    int stock = 10;
+                    
+                    // Obtener los IDs seleccionados
+                int categoryId = Convert.ToInt32(ddlCategory.SelectedValue);
+                    int providerId = Convert.ToInt32(ddlProvider.SelectedValue);
+                    
+                    System.Diagnostics.Debug.WriteLine($"Guardando producto con datos: Nombre={txtProductName.Text}, " +
+                        $"Precio={price}, Stock={stock}, CategoríaID={categoryId}, ProveedorID={providerId}");
+                
+                    // Forma directa sin confirmación para evitar problemas de JavaScript
+                    // Guardar producto usando la capa lógica
+                    bool result = productsLogic.SaveProduct(
+                    txtProductName.Text, 
+                        price,
+                        stock,
+                    categoryId, 
+                        providerId
+                );
+                
+                    System.Diagnostics.Debug.WriteLine($"Resultado de guardado: {(result ? "Éxito" : "Fallo")}");
+                
+                    if (result)
+                    {
+                // Limpiar los controles
+                txtProductName.Text = string.Empty;
+                txtProductPrice.Text = string.Empty;
+                ddlCategory.SelectedIndex = 0;
+                ddlProvider.SelectedIndex = 0;
+                        
+                        // Actualizar la vista
+                        BindProductsGrid();
+                        
+                        // Mostrar mensaje de éxito
+                        ScriptManager.RegisterStartupScript(this, GetType(), "SuccessMessage", 
+                            "alert('Producto guardado exitosamente.');", true);
+                    }
+                    else
+                    {
+                        // Mostrar mensaje de error más detallado
+                        ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                            "alert('No se pudo guardar el producto. Puede ser por un problema de conexión a la base de datos o porque el producto ya existe. Verifique los datos e intente nuevamente.');", true);
+                    }
+                }
+                else
+                {
+                    // Recopilar información sobre qué campos faltan
+                    List<string> camposFaltantes = new List<string>();
+                    if (string.IsNullOrEmpty(txtProductName.Text)) camposFaltantes.Add("Nombre del producto");
+                    if (string.IsNullOrEmpty(txtProductPrice.Text)) camposFaltantes.Add("Precio");
+                    if (ddlCategory.SelectedIndex <= 0) camposFaltantes.Add("Categoría");
+                    if (ddlProvider.SelectedIndex <= 0) camposFaltantes.Add("Proveedor");
+                    
+                    string mensajeError = "Todos los campos son obligatorios. ";
+                    if (camposFaltantes.Count > 0)
+                    {
+                        mensajeError += "Falta completar: " + string.Join(", ", camposFaltantes);
+                    }
+                    
+                    // Mostrar mensaje de error si faltan datos
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                        $"alert('{mensajeError}');", true);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Registrar detalles del error
+                System.Diagnostics.Debug.WriteLine($"Error al guardar el producto: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error interno: {ex.InnerException.Message}");
+                }
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                
+                // Mostrar mensaje de error detallado
+                ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                    $"alert('Error al guardar el producto: {ex.Message.Replace("'", "\\'")}\\n" +
+                    $"Revise los logs para más detalles.');", true);
+            }
+        }
+
+        /// <summary>
+        /// Manejar comandos de fila del GridView
+        /// </summary>
+        protected void gvProducts_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            // Implementar si se necesitan comandos personalizados adicionales
+        }
+
+        /// <summary>
+        /// Eliminar un producto
+        /// </summary>
+        protected void gvProducts_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        {
+            try
+            {
+            // Obtener el ID del producto a eliminar
+            int productId = Convert.ToInt32(gvProducts.DataKeys[e.RowIndex].Value);
+                System.Diagnostics.Debug.WriteLine($"Intentando eliminar producto con ID: {productId}");
+                
+                // Eliminar el producto usando la capa lógica
+                bool result = productsLogic.DeleteProduct(productId);
+                
+                if (result)
+                {
+                // Actualizar la vista
+                BindProductsGrid();
+                    
+                    // Mostrar mensaje de éxito
+                    ScriptManager.RegisterStartupScript(this, GetType(), "SuccessMessage", 
+                        "alert('Producto eliminado exitosamente.');", true);
+                }
+                else
+                {
+                    // Mostrar mensaje de error
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                        "alert('No se pudo eliminar el producto. Es posible que tenga dependencias en el sistema.');", true);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Registrar detalles del error
+                System.Diagnostics.Debug.WriteLine($"Error al eliminar producto: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error interno: {ex.InnerException.Message}");
+                }
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                
+                // Mostrar mensaje de error
+                ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                    $"alert('Error al procesar la solicitud: {ex.Message.Replace("'", "\\'")}');", true);
+            }
+        }
+
+        /// <summary>
+        /// Iniciar la edición de un producto
+        /// </summary>
+        protected void gvProducts_RowEditing(object sender, GridViewEditEventArgs e)
+        {
+            gvProducts.EditIndex = e.NewEditIndex;
+            BindProductsGrid();
+            
+            // Cargar los dropdowns de categorías y proveedores en modo edición
+            try 
+            {
+            DropDownList ddlCategoryEdit = (DropDownList)gvProducts.Rows[e.NewEditIndex].FindControl("ddlCategoryEdit");
+            DropDownList ddlProviderEdit = (DropDownList)gvProducts.Rows[e.NewEditIndex].FindControl("ddlProviderEdit");
+            
+            if (ddlCategoryEdit != null)
+            {
+                    // Cargar categorías
+                    DataTable categoriesTable = categoryLogic.showCategories();
+                    
+                ddlCategoryEdit.DataSource = categoriesTable;
+                    ddlCategoryEdit.DataTextField = "description";
+                    ddlCategoryEdit.DataValueField = "id";
+                ddlCategoryEdit.DataBind();
+                
+                    // Obtener el ID de la categoría actual del producto
+                    string categoryId = gvProducts.DataKeys[e.NewEditIndex].Values["CategoryID"].ToString();
+                    // Seleccionar la categoría actual
+                    ddlCategoryEdit.SelectedValue = categoryId;
+                }
+                
+                if (ddlProviderEdit != null)
+                {
+                    // Obtener proveedores desde la capa lógica
+                    DataSet ds = providersLogic.ShowProviders();
+                    
+                    // Configurar tabla para el DropDownList
+                    DataTable providersTable = new DataTable();
+                    providersTable.Columns.Add("ProviderID", typeof(int));
+                    providersTable.Columns.Add("Name", typeof(string));
+                    
+                    // Transformar datos del formato de la BD al formato del DropDownList
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow row in ds.Tables[0].Rows)
+                        {
+                            int id = Convert.ToInt32(row["prov_id"]);
+                            string name = row["prov_nombre"].ToString();
+                            
+                            providersTable.Rows.Add(id, name);
+                        }
+                    }
+                    
+                ddlProviderEdit.DataSource = providersTable;
+                ddlProviderEdit.DataTextField = "Name";
+                ddlProviderEdit.DataValueField = "ProviderID";
+                ddlProviderEdit.DataBind();
+                
+                    // Obtener el ID del proveedor actual del producto
+                    string providerId = gvProducts.DataKeys[e.NewEditIndex].Values["ProviderID"].ToString();
+                    // Seleccionar el proveedor actual
+                    ddlProviderEdit.SelectedValue = providerId;
+                }
+            }
+            catch (Exception ex)
+                    {
+                ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                    $"alert('Error al cargar datos para edición: {ex.Message.Replace("'", "\\'")}');", true);
+            }
+        }
+
+        /// <summary>
+        /// Cancelar la edición de un producto
+        /// </summary>
+        protected void gvProducts_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+        {
+            gvProducts.EditIndex = -1;
+            BindProductsGrid();
+        }
+
+        /// <summary>
+        /// Actualizar un producto existente
+        /// </summary>
+        protected void gvProducts_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        {
+            try
+            {
+            // Obtener el ID del producto a actualizar
+            int productId = Convert.ToInt32(gvProducts.DataKeys[e.RowIndex].Value);
+            
+            // Obtener los nuevos valores
+            TextBox txtName = (TextBox)gvProducts.Rows[e.RowIndex].FindControl("txtName");
+            TextBox txtPrice = (TextBox)gvProducts.Rows[e.RowIndex].FindControl("txtPrice");
+            DropDownList ddlCategoryEdit = (DropDownList)gvProducts.Rows[e.RowIndex].FindControl("ddlCategoryEdit");
+            DropDownList ddlProviderEdit = (DropDownList)gvProducts.Rows[e.RowIndex].FindControl("ddlProviderEdit");
+            
+                if (txtName != null && !string.IsNullOrEmpty(txtName.Text) && 
+                    txtPrice != null && !string.IsNullOrEmpty(txtPrice.Text) && 
+                    ddlCategoryEdit != null && ddlProviderEdit != null)
+            {
+                    decimal price;
+                    if (!decimal.TryParse(txtPrice.Text, out price) || price <= 0)
+                    {
+                        ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                            "alert('El precio debe ser un número positivo.');", true);
+                        return;
+                    }
+                    
+                    // Por defecto, mantenemos el stock actual (que no podemos editar en este UI)
+                    int stock = 0;
+                
+                    // Actualizar producto usando la capa lógica
+                    bool result = productsLogic.UpdateProduct(
+                        productId,
+                        txtName.Text,
+                        price,
+                        stock,
+                        Convert.ToInt32(ddlCategoryEdit.SelectedValue),
+                        Convert.ToInt32(ddlProviderEdit.SelectedValue)
+                    );
+                    
+                    if (result)
+                    {
+                // Salir del modo de edición
+                gvProducts.EditIndex = -1;
+                
+                // Actualizar la vista
+                BindProductsGrid();
+                        
+                        // Mostrar mensaje de éxito
+                        ScriptManager.RegisterStartupScript(this, GetType(), "SuccessMessage", 
+                            "alert('Producto actualizado exitosamente.');", true);
+                    }
+                    else
+                    {
+                        // Mostrar mensaje de error
+                        ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                            "alert('No se pudo actualizar el producto. Verifique los datos e intente nuevamente.');", true);
+                    }
+                }
+                else
+                {
+                    // Mostrar mensaje de error si faltan datos
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                        "alert('Todos los campos son obligatorios.');", true);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Mostrar mensaje de error
+                ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
+                    $"alert('Error al actualizar el producto: {ex.Message.Replace("'", "\\'")}');", true);
+            }
         }
     }
-}
+} 

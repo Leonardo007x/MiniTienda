@@ -52,7 +52,7 @@ namespace MiniTienda.Presentation
                         // Guardar información del usuario en sesión
                         Session["UserID"] = 1;
                         Session["Username"] = "Administrador";
-                        Session["Role"] = "admin";
+                        Session["UserRole"] = "Admin";
 
                         // Redirigir a la página principal
                         Response.Redirect("~/Index.aspx");
@@ -94,7 +94,7 @@ namespace MiniTienda.Presentation
                                         // Contraseña correcta, iniciar sesión
                                         Session["UserID"] = userId;
                                         Session["Username"] = email;
-                                        Session["Role"] = "usuario";
+                                        Session["UserRole"] = "usuario";
                                         Response.Redirect("~/Index.aspx");
                                     }
                                     else

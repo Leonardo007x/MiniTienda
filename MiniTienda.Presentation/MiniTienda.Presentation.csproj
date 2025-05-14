@@ -131,7 +131,9 @@
     <Content Include="WFProducts.aspx" />
     <Content Include="WFUsers.aspx" />
     <Content Include="WFCategories.aspx" />
+    <Content Include="WFProducts.aspx" />
     <Content Include="WFProviders.aspx" />
+    <Content Include="WFUsers.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Index.aspx.cs">
@@ -176,12 +178,26 @@
     <Compile Include="WFCategories.aspx.designer.cs">
       <DependentUpon>WFCategories.aspx</DependentUpon>
     </Compile>
+    <Compile Include="WFProducts.aspx.cs">
+      <DependentUpon>WFProducts.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WFProducts.aspx.designer.cs">
+      <DependentUpon>WFProducts.aspx</DependentUpon>
+    </Compile>
     <Compile Include="WFProviders.aspx.cs">
       <DependentUpon>WFProviders.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="WFProviders.aspx.designer.cs">
       <DependentUpon>WFProviders.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WFUsers.aspx.cs">
+      <DependentUpon>WFUsers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WFUsers.aspx.designer.cs">
+      <DependentUpon>WFUsers.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -196,7 +212,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MiniTienda.Logic\MiniTienda.Logic.csproj">
       <Project>{34D2AB37-4DA0-489C-BF00-0B4237DFDE03}</Project>
-      <n>MiniTienda.Logic</n>
+      <Name>MiniTienda.Logic</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

@@ -100,6 +100,34 @@ namespace MiniTienda.Logic
             return _productData.updateProducts(productId, code, name, stock, priceAsDouble, categoryId, providerId);
         }
 
+        /// <summary>
+        /// Elimina un producto del sistema.
+        /// </summary>
+        /// <param name="productId">ID del producto a eliminar</param>
+        /// <returns>True si la operación fue exitosa, False en caso contrario</returns>
+        public bool DeleteProduct(int productId)
+        {
+            // Validar el ID
+            if (productId <= 0)
+            {
+                Console.WriteLine($"ID de producto no válido para eliminar: {productId}");
+                return false;
+            }
+            
+            // Llamar al método de la capa de datos
+            try
+            {
+                bool result = _productData.deleteProduct(productId);
+                Console.WriteLine($"Resultado de eliminación del producto {productId}: {(result ? "Exitoso" : "Fallido")}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al eliminar producto en capa lógica: {ex.Message}");
+                return false;
+            }
+        }
+
         // Método para validar todos los datos del producto
         private bool ValidateProductData(string name, decimal price, int stock, int categoryId, int providerId)
         {

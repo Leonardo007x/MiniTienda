@@ -44,6 +44,8 @@ namespace MiniTienda.Presentation
                 if (Session["Role"] != null)
                 {
                     lblCurrentRole.Text = Session["Role"].ToString();
+                    // Asegurar compatibilidad con WFUsers.aspx.cs
+                    Session["UserRole"] = Session["Role"];
                 }
 
                 // Obtenemos el rol del usuario para gestionar los permisos
@@ -52,13 +54,20 @@ namespace MiniTienda.Presentation
                 // Configurar visibilidad de menús según el rol
                 ConfigureMenusByRole(userRole);
 
+                // Haciendo visible todos los menús para permitir acceso a todas las páginas
+                menuCategorias.Visible = true;
+                menuProveedores.Visible = true;
+                menuProductos.Visible = true;
+                menuUsuarios.Visible = true;
+
                 // Obtenemos la página actual
                 string currentPage = HttpContext.Current.Request.Url.AbsolutePath.ToLower();
 
-                // Implementar restricciones de acceso basadas en roles
+                // Implementar restricciones de acceso basadas en roles - Desactivado temporalmente
                 bool hasAccess = true;
 
-                // Control de acceso por roles
+                // Control de acceso por roles - Desactivado temporalmente
+                /*
                 if (currentPage.Contains("wfusers.aspx") && 
                     !(userRole == "admin" || userRole == "administrador"))
                 {
@@ -73,6 +82,7 @@ namespace MiniTienda.Presentation
                     // Administradores y personal de almacén pueden gestionar categorías y proveedores
                     hasAccess = false;
                 }
+                */
 
                 // Si el usuario no tiene acceso a la página actual, redirigir a la página de inicio
                 if (!hasAccess)

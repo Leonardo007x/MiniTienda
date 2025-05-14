@@ -1,66 +1,135 @@
-<%@ Page Title="Products" Language="C#" MasterPageFile="~/Main.Master" AutoEventWireup="true" CodeBehind="WFProducts.aspx.cs" Inherits="MiniTienda.Presentation.WFProducts" %>
+
+<%@ Page Title="Productos" Language="C#" MasterPageFile="~/Main.Master" AutoEventWireup="true" CodeBehind="WFProducts.aspx.cs" Inherits="MiniTienda.Presentation.WFProducts" %>
 
 <%--
     WFProducts.aspx
-    Página para la gestión de categorías de productos
-    Permite crear, editar y eliminar categorías del sistema
+    Página para la gestión de productos
+    Permite crear, editar y eliminar productos del sistema
+    Desarrollado por: Elkin
 --%>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <div>
-        <!-- Campo oculto para almacenar el ID del producto -->
-        <asp:TextBox ID="TBId" runat="server" CssClass="form-control" Visible="false"></asp:TextBox>
-
-        <!-- Campo para ingresar el código del producto -->
-        <asp:Label ID="Label1" runat="server" Text="Ingrese el código:"></asp:Label>
-        <asp:TextBox ID="TBCode" runat="server" CssClass="form-control"></asp:TextBox>
-
-        <!-- Campo para ingresar la descripción del producto -->
-        <asp:Label ID="Label2" runat="server" Text="Ingrese la descripción:"></asp:Label>
-        <asp:TextBox ID="TBDescription" runat="server" CssClass="form-control"></asp:TextBox>
-
-        <!-- Campo para ingresar la cantidad del producto -->
-        <asp:Label ID="Label3" runat="server" Text="Ingrese la cantidad:"></asp:Label>
-        <asp:TextBox ID="TBQuantity" runat="server" CssClass="form-control"></asp:TextBox>
-
-        <!-- Campo para ingresar el precio del producto -->
-        <asp:Label ID="Label4" runat="server" Text="Ingrese el precio:"></asp:Label>
-        <asp:TextBox ID="TBPrice" runat="server" CssClass="form-control"></asp:TextBox>
-
-        <!-- Campo para seleccionar la categoría del producto -->
-        <asp:Label ID="Label5" runat="server" Text="Seleccione la categoría:"></asp:Label>
-        <asp:DropDownList ID="DDLCategories" runat="server" CssClass="form-select"></asp:DropDownList>
-
-        <!-- Campo para seleccionar el proveedor del producto -->
-        <asp:Label ID="Label6" runat="server" Text="Seleccione el proveedor:"></asp:Label>
-        <asp:DropDownList ID="DDLProviders" runat="server" CssClass="form-select"></asp:DropDownList>
+    <div class="container mt-4">
+        <!-- Formulario para crear/editar productos -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h4><i class="fas fa-box-open"></i> Gestión de Productos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row mb-3">
+                            <!-- Campo para el nombre del producto -->
+                            <div class="col-md-3">
+                                <asp:TextBox ID="txtProductName" runat="server" CssClass="form-control" placeholder="Nombre del producto"></asp:TextBox>
+                                <small class="form-text text-muted">Nombre del producto</small>
+                            </div>
+                            <!-- Campo para el precio del producto -->
+                            <div class="col-md-2">
+                                <asp:TextBox ID="txtProductPrice" runat="server" CssClass="form-control" placeholder="Precio" TextMode="Number" step="0.01"></asp:TextBox>
+                                <small class="form-text text-muted">Precio en $</small>
+                            </div>
+                            <!-- Selector de categoría -->
+                            <div class="col-md-3">
+                                <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
+                                <small class="form-text text-muted">Categoría</small>
+                            </div>
+                            <!-- Selector de proveedor -->
+                            <div class="col-md-3">
+                                <asp:DropDownList ID="ddlProvider" runat="server" CssClass="form-control"></asp:DropDownList>
+                                <small class="form-text text-muted">Proveedor</small>
+                            </div>
+                            <!-- Botón para guardar el producto -->
+                            <div class="col-md-1">
+                                <asp:Button ID="btnSaveProduct" runat="server" Text="Guardar" CssClass="btn btn-primary btn-block" OnClick="btnSaveProduct_Click" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tabla de productos existentes -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h4>Lista de Productos</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <!-- GridView para mostrar y administrar los productos -->
+                            <asp:GridView ID="gvProducts" runat="server" AutoGenerateColumns="False" 
+                                CssClass="table table-striped table-bordered" 
+                                OnRowCommand="gvProducts_RowCommand"
+                                OnRowDeleting="gvProducts_RowDeleting"
+                                OnRowEditing="gvProducts_RowEditing"
+                                OnRowCancelingEdit="gvProducts_RowCancelingEdit"
+                                OnRowUpdating="gvProducts_RowUpdating"
+                                DataKeyNames="ProductID">
+                                <Columns>
+                                    <%-- Columna para el ID (solo lectura) --%>
+                                    <asp:BoundField DataField="ProductID" HeaderText="ID" ReadOnly="True" />
+                                    <%-- Columna para el nombre (editable) --%>
+                                    <asp:TemplateField HeaderText="Nombre">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblName" runat="server" Text='<%# Eval("Name") %>'></asp:Label>
+                                        </ItemTemplate>
+                                        <EditItemTemplate>
+                                            <asp:TextBox ID="txtName" runat="server" CssClass="form-control" Text='<%# Bind("Name") %>'></asp:TextBox>
+                                        </EditItemTemplate>
+                                    </asp:TemplateField>
+                                    <%-- Columna para el precio (editable) --%>
+                                    <asp:TemplateField HeaderText="Precio">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblPrice" runat="server" Text='<%# String.Format("${0:0.00}", Eval("Price")) %>'></asp:Label>
+                                        </ItemTemplate>
+                                        <EditItemTemplate>
+                                            <asp:TextBox ID="txtPrice" runat="server" CssClass="form-control" Text='<%# Bind("Price") %>' TextMode="Number" step="0.01"></asp:TextBox>
+                                        </EditItemTemplate>
+                                    </asp:TemplateField>
+                                    <%-- Columna para la categoría (editable) --%>
+                                    <asp:TemplateField HeaderText="Categoría">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblCategory" runat="server" Text='<%# Eval("CategoryName") %>'></asp:Label>
+                                        </ItemTemplate>
+                                        <EditItemTemplate>
+                                            <asp:DropDownList ID="ddlCategoryEdit" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </EditItemTemplate>
+                                    </asp:TemplateField>
+                                    <%-- Columna para el proveedor (editable) --%>
+                                    <asp:TemplateField HeaderText="Proveedor">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblProvider" runat="server" Text='<%# Eval("ProviderName") %>'></asp:Label>
+                                        </ItemTemplate>
+                                        <EditItemTemplate>
+                                            <asp:DropDownList ID="ddlProviderEdit" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </EditItemTemplate>
+                                    </asp:TemplateField>
+                                    <%-- Botones de edición --%>
+                                    <asp:CommandField ShowEditButton="True" ButtonType="Button" EditText="Editar" UpdateText="Actualizar" CancelText="Cancelar" ControlStyle-CssClass="btn btn-sm btn-info" />
+                                    <%-- Botón de eliminación --%>
+                                    <asp:TemplateField>
+                                        <ItemTemplate>
+                                            <asp:Button ID="btnDelete" runat="server" CommandName="Delete" Text="Eliminar" CssClass="btn btn-sm btn-danger" 
+                                                OnClientClick="return confirm('¿Está seguro que desea eliminar este producto?');" />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                                <%-- Plantilla para cuando no hay datos --%>
+                                <EmptyDataTemplate>
+                                    <div class="alert alert-info">
+                                        No hay productos registrados.
+                                    </div>
+                                </EmptyDataTemplate>
+                            </asp:GridView>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Botones para guardar o actualizar productos -->
-    <asp:Button ID="BtnSave" runat="server" CssClass="btn btn-success" Text="Guardar" OnClick="BtnSave_Click" />
-    <asp:Button ID="BtnUpdate" runat="server" CssClass="btn btn-primary" Text="Actualizar" OnClick="BtnUpdate_Click" />
-
-    <!-- Etiqueta para mostrar mensajes de éxito o error -->
-    <asp:Label ID="LblMsj" runat="server" Text="" CssClass="text-danger"></asp:Label>
-
-    <!-- GridView para mostrar los productos registrados -->
-    <asp:GridView ID="GVProducts" runat="server" CssClass="table table-hover" 
-                  OnRowDataBound="GVProducts_RowDataBound" 
-                  OnSelectedIndexChanged="GVProducts_SelectedIndexChanged"
-                  AutoGenerateColumns="False">
-        <Columns>
-            <!-- Columnas enlazadas a los campos del producto -->
-            <asp:BoundField DataField="prod_codigo" HeaderText="Código" />
-            <asp:BoundField DataField="prod_descripcion" HeaderText="Nombre" />
-            <asp:BoundField DataField="prod_cantidad" HeaderText="Cantidad" />
-            <asp:BoundField DataField="prod_precio" HeaderText="Precio" />
-            <asp:BoundField DataField="prod_categoria" HeaderText="Categoría" />
-            <asp:BoundField DataField="prod_proveedor" HeaderText="Proveedor" />
-            <!-- Columna para seleccionar un producto -->
-            <asp:CommandField ShowSelectButton="True" />
-        </Columns>
-    </asp:GridView>
-</asp:Content>
+</asp:Content> 

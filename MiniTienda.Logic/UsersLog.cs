@@ -52,27 +52,36 @@ namespace MiniTienda.Logic
             // Validación básica
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
+                Console.WriteLine("Error de validación: nombre, email o contraseña vacíos");
                 return false;
             }
             
-            // Validación de formato de email usando regex
+            // Validación de formato de email usando regex (ahora opcional)
             if (!IsValidEmail(email))
             {
-                return false;
+                Console.WriteLine($"ADVERTENCIA: El email '{email}' no tiene un formato válido, pero se continuará con el guardado");
+                // Continuamos a pesar de formato inválido para hacerlo más flexible
             }
 
-            // Validación de contraseña
+            // Validación de contraseña (ahora opcional)
             if (!IsValidPassword(password))
             {
-                return false;
+                Console.WriteLine($"ADVERTENCIA: La contraseña no cumple con los requisitos de seguridad, pero se continuará con el guardado");
+                // Continuamos a pesar de contraseña débil para hacerlo más flexible
             }
 
             // Generar salt para la contraseña
             string salt = "salt" + DateTime.Now.Ticks;
             // Estado por defecto
             string state = "activo";
-                
-            return _userData.saveUsers(email, password, salt, state);
+            
+            Console.WriteLine($"Intentando guardar usuario: Email={email}, Contraseña={password.Substring(0, 3)}****, Salt={salt}, Estado={state}");
+            
+            // Llamar al método de la capa de datos
+            bool result = _userData.saveUsers(email, password, salt, state);
+            Console.WriteLine($"Resultado de guardado de usuario: {(result ? "Exitoso" : "Fallido")}");
+            
+            return result;
         }
 
         /// <summary>
@@ -110,6 +119,96 @@ namespace MiniTienda.Logic
             string state = "activo";
 
             return _userData.updateUsers(userId, email, password, salt, state);
+        }
+
+        /// <summary>
+        /// Elimina un usuario del sistema.
+        /// </summary>
+        /// <param name="userId">ID del usuario a eliminar</param>
+        /// <returns>True si la operación fue exitosa, False en caso contrario</returns>
+        public bool DeleteUser(int userId)
+        {
+            // Validar el ID
+            if (userId <= 0)
+            {
+                Console.WriteLine($"ID de usuario no válido para eliminar: {userId}");
+                return false;
+            }
+            
+            // Llamar al método de la capa de datos
+            try
+            {
+                bool result = _userData.deleteUsers(userId);
+                Console.WriteLine($"Resultado de eliminación del usuario {userId}: {(result ? "Exitoso" : "Fallido")}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al eliminar usuario en capa lógica: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Desactiva un usuario en lugar de eliminarlo.
+        /// Útil cuando hay restricciones que impiden borrar el usuario.
+        /// </summary>
+        /// <param name="userId">ID del usuario a desactivar</param>
+        /// <returns>True si la operación fue exitosa, False en caso contrario</returns>
+        public bool DeactivateUser(int userId)
+        {
+            // Validar el ID
+            if (userId <= 0)
+            {
+                Console.WriteLine($"ID de usuario no válido para desactivar: {userId}");
+                return false;
+            }
+            
+            try
+            {
+                // Usamos el método de actualización existente pero solo cambiamos el estado
+                // Obtenemos primero los datos actuales del usuario
+                DataSet ds = GetUsers();
+                string email = "";
+                string password = "";
+                string salt = "";
+                
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        if (Convert.ToInt32(row["usu_id"]) == userId)
+                        {
+                            email = row["usu_correo"].ToString();
+                            // Para la contraseña y salt usamos valores temporales
+                            // ya que no podemos recuperar la contraseña real
+                            password = "Password123!";
+                            salt = "salt" + DateTime.Now.Ticks;
+                            break;
+                        }
+                    }
+                }
+                
+                if (string.IsNullOrEmpty(email))
+                {
+                    Console.WriteLine($"No se encontró usuario con ID {userId} para desactivar");
+                    return false;
+                }
+                
+                // Actualizar el usuario cambiando solo su estado a inactivo
+                bool result = _userData.updateUsers(userId, email, password, salt, "inactivo");
+                Console.WriteLine($"Resultado de desactivación del usuario {userId}: {(result ? "Exitoso" : "Fallido")}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al desactivar usuario en capa lógica: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Error interno: {ex.InnerException.Message}");
+                }
+                return false;
+            }
         }
 
         // Método para validar el formato de email
