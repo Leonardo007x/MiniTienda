@@ -1,0 +1,12 @@
+C:\Users\Elkin yandun\Source\Repos\MiniTienda\MiniTienda.Data\bin\Debug\netstandard2.0\MiniTienda.Data.dll.config
+C:\Users\Elkin yandun\Source\Repos\MiniTienda\MiniTienda.Data\bin\Debug\netstandard2.0\MiniTienda.Data.deps.json
+C:\Users\Elkin yandun\Source\Repos\MiniTienda\MiniTienda.Data\bin\Debug\netstandard2.0\MiniTienda.Data.dll
+C:\Users\Elkin yandun\Source\Repos\MiniTienda\MiniTienda.Data\bin\Debug\netstandard2.0\MiniTienda.Data.pdb
+C:\Users\Elkin yandun\Source\Repos\MiniTienda\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.csproj.AssemblyReference.cache
+C:\Users\Elkin yandun\Source\Repos\MiniTienda\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Elkin yandun\Source\Repos\MiniTienda\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.AssemblyInfoInputs.cache
+C:\Users\Elkin yandun\Source\Repos\MiniTienda\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.AssemblyInfo.cs
+C:\Users\Elkin yandun\Source\Repos\MiniTienda\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.csproj.CoreCompileInputs.cache
+C:\Users\Elkin yandun\Source\Repos\MiniTienda\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.sourcelink.json
+C:\Users\Elkin yandun\Source\Repos\MiniTienda\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.dll
+C:\Users\Elkin yandun\Source\Repos\MiniTienda\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.pdb

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Proyecto MiniTienda - Capa Lógica de Negocio
  * 
  * Implementación de la lógica de negocio para la gestión de categorías.
