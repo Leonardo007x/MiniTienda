@@ -1,85 +1,84 @@
-/*
- * Index.aspx.cs
- * Controlador para la página de inicio del sistema
- * Muestra un dashboard con estadísticas y da acceso a las principales funciones
+/**
+ * Proyecto MiniTienda - Capa de Presentación
+ * 
+ * Lógica para la página de inicio del sistema.
+ * Muestra información de bienvenida al usuario autenticado.
+ * 
+
+ * Fecha: 15/05/2025
+ * Versión: 1.1 (Sprint 3)
  */
 
 using System;
+using System.Web;
 using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.Security;
 // Comentamos la referencia problemática
 // using MiniTienda.Logic;
 using System.Collections.Generic;
-using MiniTienda.Logic;
+using System.Linq;
+using System.IO;
 using System.Data;
 
 namespace MiniTienda.Presentation
 {
     /// <summary>
-    /// Clase que gestiona la funcionalidad de la página de inicio.
-    /// Muestra un resumen del sistema con estadísticas sobre categorías, productos, proveedores y usuarios.
+    /// Clase que gestiona la funcionalidad de la página principal del sistema.
     /// </summary>
     public partial class Index : System.Web.UI.Page
     {
         /// <summary>
-        /// Método que se ejecuta cuando se carga la página
-        /// Inicializa los controles y carga los datos estadísticos
+        /// Método que se ejecuta cuando se carga la página.
         /// </summary>
         protected void Page_Load(object sender, EventArgs e)
         {
+            // Validar que el usuario está autenticado
+            if (!Request.IsAuthenticated)
+            {
+                Response.Redirect("Login.aspx");
+                return;
+            }
+
             if (!IsPostBack)
             {
-                // Cargar nombre de usuario desde la sesión
-                if (Session["Username"] != null)
+                // Mostrar el nombre de usuario autenticado
+                if (lblUsername != null)
                 {
-                    lblUsername.Text = Session["Username"].ToString();
+                    lblUsername.Text = User.Identity.Name;
                 }
 
-                // Cargar fecha y hora actual
-                lblDateTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-
-                // Cargar último acceso (si existe)
-                if (Session["LastAccess"] != null)
-                {
-                    lblLastAccess.Text = Session["LastAccess"].ToString();
-                }
-                else
-                {
-                    lblLastAccess.Text = "Primera visita";
-                }
-
-                // Actualizar último acceso
-                Session["LastAccess"] = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-
-                // Cargar estadísticas (temporalmente desactivado hasta resolver la referencia)
-                LoadStatistics();
+                // Registrar acceso en el log (en un entorno real se registraría en la BD)
+                System.Diagnostics.Debug.WriteLine($"Usuario {User.Identity.Name} accedió a la aplicación el {DateTime.Now}");
             }
         }
 
         /// <summary>
-        /// Carga las estadísticas del sistema desde la base de datos
-        /// Muestra el conteo de categorías, productos, proveedores y usuarios
+        /// Maneja el evento de clic en el botón de cerrar sesión.
+        /// Cierra la sesión del usuario y lo redirige a la página de inicio de sesión.
         /// </summary>
-        private void LoadStatistics()
+        protected void BtnCerrarSesion_Click(object sender, EventArgs e)
         {
             try
             {
-                // Aquí iría la lógica para cargar las estadísticas desde la base de datos
-                // Por ahora, usamos valores de ejemplo
-                lblCategories.Text = "0";
-                lblProducts.Text = "0";
-                lblProviders.Text = "0";
-                lblUsers.Text = "0";
+                // Registrar cierre de sesión (en un entorno real se registraría en la BD)
+                DateTime ahora = DateTime.Now;
+                System.Diagnostics.Debug.WriteLine($"Usuario {User.Identity.Name} cerró sesión el {ahora}");
+                
+                // Cerrar la sesión del usuario
+                Session.Abandon();
+                FormsAuthentication.SignOut();
+                
+                // Redirigir a la página de inicio de sesión
+                Response.Redirect("Login.aspx");
             }
             catch (Exception ex)
             {
-                // En caso de error, mostrar valores por defecto
-                lblCategories.Text = "0";
-                lblProducts.Text = "0";
-                lblProviders.Text = "0";
-                lblUsers.Text = "0";
+                // Registrar error
+                System.Diagnostics.Debug.WriteLine($"Error al cerrar sesión: {ex.Message}");
                 
-                // Registrar el error (en un sistema real, podríamos utilizar un logger)
-                System.Diagnostics.Debug.WriteLine("Error al cargar estadísticas: " + ex.Message);
+                // Intentar redirigir de todos modos
+                Response.Redirect("Login.aspx");
             }
         }
     }

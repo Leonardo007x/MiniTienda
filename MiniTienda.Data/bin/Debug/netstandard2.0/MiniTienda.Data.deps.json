@@ -9,8 +9,11 @@
     ".NETStandard,Version=v2.0/": {
       "MiniTienda.Data/1.0.0": {
         "dependencies": {
+          "MiniTienda.Model": "1.0.0",
           "MySql.Data": "9.3.0",
-          "NETStandard.Library": "2.0.3"
+          "NETStandard.Library": "2.0.3",
+          "SimpleCrypto": "0.3.30.26",
+          "System.Configuration.ConfigurationManager": "8.0.0"
         },
         "runtime": {
           "MiniTienda.Data.dll": {}
@@ -112,6 +115,14 @@
       "NETStandard.Library/2.0.3": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0"
+        }
+      },
+      "SimpleCrypto/0.3.30.26": {
+        "runtime": {
+          "lib/SimpleCrypto.dll": {
+            "assemblyVersion": "26.0.0.0",
+            "fileVersion": "26.0.0.0"
+          }
         }
       },
       "System.Buffers/4.5.1": {
@@ -351,6 +362,14 @@
             "fileVersion": "0.8.5.0"
           }
         }
+      },
+      "MiniTienda.Model/1.0.0": {
+        "runtime": {
+          "MiniTienda.Model.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
       }
     }
   },
@@ -429,6 +448,13 @@
       "sha512": "sha512-st47PosZSHrjECdjeIzZQbzivYBJFv6P2nv4cj2ypdI204DO+vZ7l5raGMiX4eXMJ53RfOIg+/s4DHVZ54Nu2A==",
       "path": "netstandard.library/2.0.3",
       "hashPath": "netstandard.library.2.0.3.nupkg.sha512"
+    },
+    "SimpleCrypto/0.3.30.26": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-MiKxbgtfyZL9IXI4crb3+sLbjf8uUiVCcc1YvfajlIFlWiCbW+SejXZ2wlp/V9CGcLsYEVft7QvcncooWBAchQ==",
+      "path": "simplecrypto/0.3.30.26",
+      "hashPath": "simplecrypto.0.3.30.26.nupkg.sha512"
     },
     "System.Buffers/4.5.1": {
       "type": "package",
@@ -590,6 +616,11 @@
       "sha512": "sha512-TR4j17WeVSEb3ncgL2NqlXEqcy04I+Kk9CaebNDplUeL8XOgjkZ7fP4Wg4grBdPLIqsV86p2QaXTkZoRMVOsew==",
       "path": "zstdsharp.port/0.8.5",
       "hashPath": "zstdsharp.port.0.8.5.nupkg.sha512"
+    },
+    "MiniTienda.Model/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }

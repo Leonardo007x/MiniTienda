@@ -11,7 +11,6 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
-using MiniTienda.Logic;
 
 namespace MiniTienda.Presentation
 {
@@ -22,7 +21,13 @@ namespace MiniTienda.Presentation
     public partial class WFCategories : System.Web.UI.Page
     {
         // Objeto para acceder a la capa lógica de categorías
-        private CategoryLog categoryLogic = new CategoryLog();
+        private MiniTienda.Logic.CategoryLog categoryLogic;
+        
+        // Constructor de la clase
+        public WFCategories()
+        {
+            categoryLogic = new MiniTienda.Logic.CategoryLog();
+        }
 
         /// <summary>
         /// Método que se ejecuta cuando se carga la página
@@ -73,7 +78,7 @@ namespace MiniTienda.Presentation
             {
                 // Mostrar mensaje de error
                 ScriptManager.RegisterStartupScript(this, GetType(), "ErrorMessage", 
-                    $"alert('Error al cargar categorías: {ex.Message.Replace("'", "\\'")}');", true);
+                    $"alert('Error al cargar categorías: {ex.Message.Replace("'", "\\'")}')", true);
             }
         }
 

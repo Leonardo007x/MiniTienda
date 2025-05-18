@@ -10,3 +10,18 @@ C:\Users\Elkin yandun\Source\Repos\MiniTienda\MiniTienda.Data\obj\Debug\netstand
 C:\Users\Elkin yandun\Source\Repos\MiniTienda\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.sourcelink.json
 C:\Users\Elkin yandun\Source\Repos\MiniTienda\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.dll
 C:\Users\Elkin yandun\Source\Repos\MiniTienda\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.pdb
+C:\Users\julia\source\repos\Presentacion\minitiendaApp\MiniTienda.Data\bin\Debug\netstandard2.0\MiniTienda.Data.dll.config
+C:\Users\julia\source\repos\Presentacion\minitiendaApp\MiniTienda.Data\bin\Debug\netstandard2.0\MiniTienda.Data.deps.json
+C:\Users\julia\source\repos\Presentacion\minitiendaApp\MiniTienda.Data\bin\Debug\netstandard2.0\MiniTienda.Data.dll
+C:\Users\julia\source\repos\Presentacion\minitiendaApp\MiniTienda.Data\bin\Debug\netstandard2.0\MiniTienda.Data.pdb
+C:\Users\julia\source\repos\Presentacion\minitiendaApp\MiniTienda.Data\bin\Debug\netstandard2.0\MiniTienda.Model.dll
+C:\Users\julia\source\repos\Presentacion\minitiendaApp\MiniTienda.Data\bin\Debug\netstandard2.0\MiniTienda.Model.pdb
+C:\Users\julia\source\repos\Presentacion\minitiendaApp\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.csproj.AssemblyReference.cache
+C:\Users\julia\source\repos\Presentacion\minitiendaApp\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\julia\source\repos\Presentacion\minitiendaApp\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.AssemblyInfoInputs.cache
+C:\Users\julia\source\repos\Presentacion\minitiendaApp\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.AssemblyInfo.cs
+C:\Users\julia\source\repos\Presentacion\minitiendaApp\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.csproj.CoreCompileInputs.cache
+C:\Users\julia\source\repos\Presentacion\minitiendaApp\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.sourcelink.json
+C:\Users\julia\source\repos\Presentacion\minitiendaApp\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTien.33FB3A56.Up2Date
+C:\Users\julia\source\repos\Presentacion\minitiendaApp\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.dll
+C:\Users\julia\source\repos\Presentacion\minitiendaApp\MiniTienda.Data\obj\Debug\netstandard2.0\MiniTienda.Data.pdb

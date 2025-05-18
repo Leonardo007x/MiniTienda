@@ -27,8 +27,8 @@ namespace MiniTienda.Data
         /// 
         /// Este método realiza las siguientes acciones:
         /// 1. Intenta conectarse al servidor MySQL sin especificar base de datos
-        /// 2. Crea la base de datos 'minitienda' si no existe
-        /// 3. Verifica la conexión a la base de datos 'minitienda'
+        /// 2. Crea la base de datos 'MiniTiendaDB' si no existe
+        /// 3. Verifica la conexión a la base de datos 'MiniTiendaDB'
         /// 
         /// </summary>
         /// <returns>True si la conexión es exitosa, False en caso contrario</returns>
@@ -38,7 +38,7 @@ namespace MiniTienda.Data
             {
                 // Primero intentamos conectar sin especificar base de datos para crear minitienda si no existe
                 string connectionString = ConfigurationManager.ConnectionStrings["MiniTiendaDB"].ConnectionString;
-                string connectionSinDB = connectionString.Replace("Database=minitienda;", "");
+                string connectionSinDB = connectionString.Replace("Database=MiniTiendaDB;", "");
                 
                 using (var connection = new MySqlConnection(connectionSinDB))
                 {
@@ -46,10 +46,10 @@ namespace MiniTienda.Data
                     Console.WriteLine("Conexión exitosa al servidor MySQL!");
                     
                     // Intentamos crear la base de datos si no existe
-                    using (var command = new MySqlCommand("CREATE DATABASE IF NOT EXISTS minitienda;", connection))
+                    using (var command = new MySqlCommand("CREATE DATABASE IF NOT EXISTS MiniTiendaDB;", connection))
                     {
                         command.ExecuteNonQuery();
-                        Console.WriteLine("Base de datos 'minitienda' creada o verificada exitosamente.");
+                        Console.WriteLine("Base de datos 'MiniTiendaDB' creada o verificada exitosamente.");
                     }
                     
                     // Nota: Se ha eliminado la ejecución de procedimientos almacenados para evitar errores de sintaxis

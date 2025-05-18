@@ -74,6 +74,9 @@
                         <li class="nav-item" id="menuInicio" runat="server">
                             <a class="nav-link" href="Index.aspx"><i class="fas fa-home"></i> Inicio</a>
                         </li>
+                        <li class="nav-item" id="menuDashboard" runat="server">
+                            <a class="nav-link" href="Dashboard.aspx"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                        </li>
                         <li class="nav-item" id="menuCategorias" runat="server">
                             <a class="nav-link" href="WFCategories.aspx"><i class="fas fa-tags"></i> Categorías</a>
                         </li>

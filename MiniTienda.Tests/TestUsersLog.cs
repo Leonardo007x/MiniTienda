@@ -34,7 +34,7 @@ namespace MiniTienda.Tests
         }
 
         /// <summary>
-        /// Prueba el método GetUsers() para verificar que se obtengan correctamente los usuarios
+        /// Prueba el método showUsers() para verificar que se obtengan correctamente los usuarios
         /// desde la base de datos.
         /// </summary>
         public void TestShowUsers()
@@ -42,7 +42,7 @@ namespace MiniTienda.Tests
             Console.WriteLine("Prueba de mostrar usuarios");
             try
             {
-                DataSet ds = objUsersLog.GetUsers();
+                DataSet ds = objUsersLog.showUsers();
                 if (ds != null && ds.Tables.Count > 0)
                 {
                     Console.WriteLine("Prueba exitosa: Se obtuvieron los usuarios correctamente");

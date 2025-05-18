@@ -37,13 +37,13 @@ namespace MiniTienda.Tests
         }
 
         /// <summary>
-        /// Verifica que el método GetUsers() retorne un objeto DataSet válido
+        /// Verifica que el método showUsers() retorne un objeto DataSet válido
         /// </summary>
         [TestMethod]
         public void GetUsers_ShouldReturnDataSet()
         {
             // Act
-            DataSet result = _usersLog.GetUsers();
+            DataSet result = _usersLog.showUsers();
 
             // Assert
             Assert.IsNotNull(result);

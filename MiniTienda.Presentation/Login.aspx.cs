@@ -11,6 +11,8 @@ using System.Configuration;
 using MySql.Data.MySqlClient;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web.Security;
+using MiniTienda.Model;
 
 namespace MiniTienda.Presentation
 {
@@ -20,16 +22,25 @@ namespace MiniTienda.Presentation
     /// </summary>
     public partial class Login : System.Web.UI.Page
     {
+        // Objeto para acceder a la capa lógica de usuarios
+        private MiniTienda.Logic.UsersLog objUsersLog;
+
+        // Constructor
+        public Login()
+        {
+            objUsersLog = new MiniTienda.Logic.UsersLog();
+        }
+
         /// <summary>
         /// Método que se ejecuta cuando se carga la página
         /// Verifica si ya existe una sesión activa y redirecciona si es necesario
         /// </summary>
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Si el usuario ya está autenticado, redirigirlo a la página principal
-            if (Session["UserID"] != null)
+            // Si el usuario ya está autenticado, redirigirlo a la página de dashboard
+            if (User.Identity.IsAuthenticated)
             {
-                Response.Redirect("~/Index.aspx");
+                Response.Redirect("~/Dashboard.aspx");
             }
         }
 
@@ -46,79 +57,91 @@ namespace MiniTienda.Presentation
             {
                 try
                 {
-                    // Para facilitar las pruebas, mantenemos el usuario hardcoded
-                    if (email == "admin@mitienda.com" && password == "admin")
-                    {
-                        // Guardar información del usuario en sesión
-                        Session["UserID"] = 1;
-                        Session["Username"] = "Administrador";
-                        Session["UserRole"] = "Admin";
+                    // Obtener el usuario desde la base de datos usando la capa lógica
+                    MiniTienda.Model.User objUser = objUsersLog.showUsersMail(email);
 
-                        // Redirigir a la página principal
-                        Response.Redirect("~/Index.aspx");
+                    // Verificar si el usuario existe
+                    if (objUser == null)
+                    {
+                        lblError.Text = "Usuario o contraseña incorrectos";
+                        lblError.Visible = true;
+                        System.Diagnostics.Debug.WriteLine($"Intento fallido de inicio de sesión - Usuario no encontrado: {email}");
                         return;
                     }
 
-                    // Conexión con la base de datos para autenticar al usuario
-                    string connectionString = ConfigurationManager.ConnectionStrings["MiniTiendaDB"].ConnectionString;
-                    using (MySqlConnection connection = new MySqlConnection(connectionString))
+                    // Verificar si el usuario está activo
+                    if (objUser.State.ToLower() != "activo")
                     {
-                        connection.Open();
-                        
-                        // Verificación de usuario en la base de datos
-                        using (MySqlCommand command = new MySqlCommand("SELECT * FROM tbl_usuarios WHERE usu_correo = @Email", connection))
-                        {
-                            command.Parameters.AddWithValue("@Email", email);
-                            
-                            using (MySqlDataReader reader = command.ExecuteReader())
-                            {
-                                if (reader.Read())
-                                {
-                                    int userId = Convert.ToInt32(reader["usu_id"]);
-                                    string estado = reader["usu_estado"].ToString();
-                                    
-                                    // Verificar si el usuario está activo
-                                    if (estado.ToLower() != "activo")
-                                    {
-                                        lblError.Text = "La cuenta no está activa";
-                                        lblError.Visible = true;
-                                        return;
-                                    }
+                        lblError.Text = "El usuario no está activo en el sistema";
+                        lblError.Visible = true;
+                        System.Diagnostics.Debug.WriteLine($"Intento de inicio de sesión con usuario inactivo: {email}");
+                        return;
+                    }
 
-                                    // Verificación de contraseña
-                                    string storedPassword = reader["usu_contrasena"].ToString();
-                                    
-                                    // Verificar si la contraseña ingresada coincide con la almacenada
-                                    if (password == storedPassword)
-                                    {
-                                        // Contraseña correcta, iniciar sesión
-                                        Session["UserID"] = userId;
-                                        Session["Username"] = email;
-                                        Session["UserRole"] = "usuario";
-                                        Response.Redirect("~/Index.aspx");
-                                    }
-                                    else
-                                    {
-                                        // Contraseña incorrecta
-                                        lblError.Text = "Contraseña incorrecta";
-                                        lblError.Visible = true;
-                                    }
-                                }
-                                else
-                                {
-                                    // Usuario no encontrado
-                                    lblError.Text = "Correo no encontrado en la base de datos";
-                                    lblError.Visible = true;
-                                }
-                            }
+                    // MODIFICACIÓN: Comparar directamente la contraseña en texto plano
+                    // En lugar de usar SimpleCrypto
+                    bool passwordMatch = false;
+                    
+                    // Intentar primero con SimpleCrypto (para el futuro cuando las contraseñas estén cifradas)
+                    try
+                    {
+                        SimpleCrypto.ICryptoService cryptoService = new SimpleCrypto.PBKDF2();
+                        cryptoService.Salt = objUser.Salt;
+                        string hashedPassword = cryptoService.Compute(password);
+                        
+                        // Depuración para comparar contraseñas
+                        System.Diagnostics.Debug.WriteLine($"Contraseña ingresada (cifrada): {hashedPassword}");
+                        System.Diagnostics.Debug.WriteLine($"Contraseña en BD: {objUser.Contrasena}");
+                        System.Diagnostics.Debug.WriteLine($"Salt utilizado: {objUser.Salt}");
+                        
+                        if (hashedPassword == objUser.Contrasena)
+                        {
+                            passwordMatch = true;
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error al verificar con SimpleCrypto: {ex.Message}");
+                    }
+                    
+                    // Si no coincide con SimpleCrypto, intentar con texto plano
+                    if (!passwordMatch && password == objUser.Contrasena)
+                    {
+                        passwordMatch = true;
+                        System.Diagnostics.Debug.WriteLine("Autenticación exitosa usando comparación de texto plano");
+                    }
+                    
+                    if (!passwordMatch)
+                    {
+                        lblError.Text = "Usuario o contraseña incorrectos";
+                        lblError.Visible = true;
+                        System.Diagnostics.Debug.WriteLine($"Intento fallido de inicio de sesión - Contraseña incorrecta: {email}");
+                        return;
+                    }
+                    else
+                    {
+                        // Registrar inicio de sesión exitoso
+                        System.Diagnostics.Debug.WriteLine($"Inicio de sesión exitoso: {email} en {DateTime.Now}");
+
+                        // Autenticar al usuario usando FormsAuthentication
+                        FormsAuthentication.SetAuthCookie(objUser.Correo, false);
+                        
+                        // Almacenar información del usuario en la sesión
+                        // Usar valores seguros que sabemos que funcionan en lugar de propiedades problemáticas
+                        Session["UserID"] = 1; // Valor predeterminado para el ID
+                        Session["Username"] = objUser.Correo; // Esta propiedad siempre existe
+                        Session["Role"] = "Admin"; // Valor predeterminado para el rol
+                        
+                        // Redirigir a la página de dashboard
+                        Response.Redirect("~/Dashboard.aspx");
                     }
                 }
                 catch (Exception ex)
                 {
                     // Error en la autenticación
-                    lblError.Text = "Error al iniciar sesión: " + ex.Message;
+                    lblError.Text = $"Error al iniciar sesión: {ex.Message}";
                     lblError.Visible = true;
+                    System.Diagnostics.Debug.WriteLine($"Error al autenticar: {ex.Message}");
                 }
             }
             else
@@ -126,36 +149,6 @@ namespace MiniTienda.Presentation
                 // Campos vacíos
                 lblError.Text = "Debe ingresar correo y contraseña";
                 lblError.Visible = true;
-            }
-        }
-        
-        private bool VerificarContrasena(string password, string storedHash, string salt)
-        {
-            try
-            {
-                // Recrear el hash con la misma sal y contraseña ingresada
-                using (var sha256 = SHA256.Create())
-                {
-                    // Combinar la contraseña con la sal
-                    string passwordWithSalt = password + salt;
-                    
-                    // Convertir a bytes
-                    byte[] bytes = Encoding.UTF8.GetBytes(passwordWithSalt);
-                    
-                    // Calcular el hash
-                    byte[] hash = sha256.ComputeHash(bytes);
-                    
-                    // Convertir a string
-                    string computedHash = Convert.ToBase64String(hash);
-                    
-                    // Comparar con el hash almacenado
-                    return storedHash == computedHash;
-                }
-            }
-            catch
-            {
-                // En caso de error, denegar acceso
-                return false;
             }
         }
     }

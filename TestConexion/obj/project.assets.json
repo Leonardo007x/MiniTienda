@@ -140,6 +140,15 @@
           }
         }
       },
+      "SimpleCrypto/0.3.30.26": {
+        "type": "package",
+        "compile": {
+          "lib/SimpleCrypto.dll": {}
+        },
+        "runtime": {
+          "lib/SimpleCrypto.dll": {}
+        }
+      },
       "System.Buffers/4.5.1": {
         "type": "package",
         "compile": {
@@ -480,13 +489,25 @@
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
-          "MySql.Data": "9.3.0"
+          "MiniTienda.Model": "1.0.0",
+          "MySql.Data": "9.3.0",
+          "SimpleCrypto": "0.3.30.26",
+          "System.Configuration.ConfigurationManager": "8.0.0"
         },
         "compile": {
           "bin/placeholder/MiniTienda.Data.dll": {}
         },
         "runtime": {
           "bin/placeholder/MiniTienda.Data.dll": {}
+        }
+      },
+      "MiniTienda.Model/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/MiniTienda.Model.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/MiniTienda.Model.dll": {}
         }
       }
     }
@@ -658,6 +679,18 @@
         "runtimes/win-x64/native/k5sprt64.dll",
         "runtimes/win-x64/native/krb5_64.dll",
         "runtimes/win-x64/native/krbcc64.dll"
+      ]
+    },
+    "SimpleCrypto/0.3.30.26": {
+      "sha512": "MiKxbgtfyZL9IXI4crb3+sLbjf8uUiVCcc1YvfajlIFlWiCbW+SejXZ2wlp/V9CGcLsYEVft7QvcncooWBAchQ==",
+      "type": "package",
+      "path": "simplecrypto/0.3.30.26",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/SimpleCrypto.dll",
+        "simplecrypto.0.3.30.26.nupkg.sha512",
+        "simplecrypto.nuspec"
       ]
     },
     "System.Buffers/4.5.1": {
@@ -1619,32 +1652,40 @@
       "type": "project",
       "path": "../MiniTienda.Data/MiniTienda.Data.csproj",
       "msbuildProject": "../MiniTienda.Data/MiniTienda.Data.csproj"
+    },
+    "MiniTienda.Model/1.0.0": {
+      "type": "project",
+      "path": "../MiniTienda.Model/MiniTienda.Model.csproj",
+      "msbuildProject": "../MiniTienda.Model/MiniTienda.Model.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net8.0": [
       "MiniTienda.Data >= 1.0.0",
+      "MiniTienda.Model >= 1.0.0",
+      "MySql.Data >= 9.3.0",
+      "SimpleCrypto >= 0.3.30.26",
       "System.Configuration.ConfigurationManager >= 8.0.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Elkin yandun\\.nuget\\packages\\": {},
+    "C:\\Users\\julia\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\TestConexion\\TestConexion.csproj",
+      "projectUniqueName": "C:\\Users\\julia\\source\\repos\\Presentacion\\minitiendaApp\\TestConexion\\TestConexion.csproj",
       "projectName": "TestConexion",
-      "projectPath": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\TestConexion\\TestConexion.csproj",
-      "packagesPath": "C:\\Users\\Elkin yandun\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\TestConexion\\obj\\",
+      "projectPath": "C:\\Users\\julia\\source\\repos\\Presentacion\\minitiendaApp\\TestConexion\\TestConexion.csproj",
+      "packagesPath": "C:\\Users\\julia\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\julia\\source\\repos\\Presentacion\\minitiendaApp\\TestConexion\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Elkin yandun\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\julia\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -1659,8 +1700,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj": {
-              "projectPath": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj"
+            "C:\\Users\\julia\\source\\repos\\Presentacion\\minitiendaApp\\MiniTienda.Data\\MiniTienda.Data.csproj": {
+              "projectPath": "C:\\Users\\julia\\source\\repos\\Presentacion\\minitiendaApp\\MiniTienda.Data\\MiniTienda.Data.csproj"
+            },
+            "C:\\Users\\julia\\source\\repos\\Presentacion\\minitiendaApp\\MiniTienda.Model\\MiniTienda.Model.csproj": {
+              "projectPath": "C:\\Users\\julia\\source\\repos\\Presentacion\\minitiendaApp\\MiniTienda.Model\\MiniTienda.Model.csproj"
             }
           }
         }
@@ -1681,6 +1725,14 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "MySql.Data": {
+            "target": "Package",
+            "version": "[9.3.0, )"
+          },
+          "SimpleCrypto": {
+            "target": "Package",
+            "version": "[0.3.30.26, )"
+          },
           "System.Configuration.ConfigurationManager": {
             "target": "Package",
             "version": "[8.0.0, )"
@@ -1705,5 +1757,17 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "El paquete \"SimpleCrypto 0.3.30.26\" se restauró con \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\" en lugar de la plataforma de destino del proyecto \"net8.0\". Puede que el paquete no sea totalmente compatible con el proyecto.",
+      "libraryId": "SimpleCrypto",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
 }

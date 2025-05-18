@@ -8,10 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="9.3.0" />
+    <PackageReference Include="SimpleCrypto" Version="0.3.30.26" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MiniTienda.Data\MiniTienda.Data.csproj" />
+    <ProjectReference Include="..\MiniTienda.Model\MiniTienda.Model.csproj" />
   </ItemGroup>
 
 </Project>

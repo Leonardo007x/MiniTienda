@@ -25,23 +25,14 @@
                     <div class="card-body">
                         <div class="form-row mb-3">
                             <!-- Campo para el nombre de usuario -->
-                            <div class="col-md-3">
+                            <div class="col-md-5">
                                 <asp:TextBox ID="txtUserName" runat="server" CssClass="form-control" placeholder="Nombre de usuario"></asp:TextBox>
                                 <small class="form-text text-muted">Nombre de usuario o email</small>
                             </div>
                             <!-- Campo para la contraseña -->
-                            <div class="col-md-3">
+                            <div class="col-md-5">
                                 <asp:TextBox ID="txtPassword" runat="server" TextMode="Password" CssClass="form-control" placeholder="Contraseña"></asp:TextBox>
                                 <small class="form-text text-muted">Contraseña segura</small>
-                            </div>
-                            <!-- Selector de rol -->
-                            <div class="col-md-4">
-                                <asp:DropDownList ID="ddlRole" runat="server" CssClass="form-control">
-                                    <asp:ListItem Value="Admin">Administrador</asp:ListItem>
-                                    <asp:ListItem Value="User">Usuario</asp:ListItem>
-                                    <asp:ListItem Value="Guest">Invitado</asp:ListItem>
-                                </asp:DropDownList>
-                                <small class="form-text text-muted">Rol del usuario</small>
                             </div>
                             <!-- Botón para guardar el usuario -->
                             <div class="col-md-2">
@@ -70,26 +61,26 @@
                                 OnRowEditing="gvUsers_RowEditing"
                                 OnRowCancelingEdit="gvUsers_RowCancelingEdit"
                                 OnRowUpdating="gvUsers_RowUpdating"
-                                DataKeyNames="UserID">
+                                DataKeyNames="usu_id">
                                 <Columns>
-                                    <asp:BoundField DataField="UserID" HeaderText="ID" ReadOnly="True" />
+                                    <asp:BoundField DataField="usu_id" HeaderText="ID" ReadOnly="True" />
                                     <asp:TemplateField HeaderText="Usuario">
                                         <ItemTemplate>
-                                            <asp:Label ID="lblUserName" runat="server" Text='<%# Eval("UserName") %>'></asp:Label>
+                                            <asp:Label ID="lblUserName" runat="server" Text='<%# Eval("usu_correo") %>'></asp:Label>
                                         </ItemTemplate>
                                         <EditItemTemplate>
-                                            <asp:TextBox ID="txtUserName" runat="server" CssClass="form-control" Text='<%# Bind("UserName") %>'></asp:TextBox>
+                                            <asp:TextBox ID="txtUserName" runat="server" CssClass="form-control" Text='<%# Bind("usu_correo") %>'></asp:TextBox>
                                         </EditItemTemplate>
                                     </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Rol">
+                                    <asp:TemplateField HeaderText="Estado">
                                         <ItemTemplate>
-                                            <asp:Label ID="lblRole" runat="server" Text='<%# Eval("Role") %>'></asp:Label>
+                                            <asp:Label ID="lblRole" runat="server" Text='<%# Eval("usu_estado") %>'></asp:Label>
                                         </ItemTemplate>
                                         <EditItemTemplate>
-                                            <asp:DropDownList ID="ddlRoleEdit" runat="server" CssClass="form-control" SelectedValue='<%# Bind("Role") %>'>
-                                                <asp:ListItem Value="Admin">Administrador</asp:ListItem>
-                                                <asp:ListItem Value="User">Usuario</asp:ListItem>
-                                                <asp:ListItem Value="Guest">Invitado</asp:ListItem>
+                                            <asp:DropDownList ID="ddlRoleEdit" runat="server" CssClass="form-control" SelectedValue='<%# Bind("usu_estado") %>'>
+                                                <asp:ListItem Value="activo">Activo</asp:ListItem>
+                                                <asp:ListItem Value="inactivo">Inactivo</asp:ListItem>
+                                                <asp:ListItem Value="bloqueado">Bloqueado</asp:ListItem>
                                             </asp:DropDownList>
                                         </EditItemTemplate>
                                     </asp:TemplateField>

@@ -99,8 +99,9 @@ namespace MiniTienda.Presentation
         /// <param name="role">Rol del usuario actual</param>
         private void ConfigureMenusByRole(string role)
         {
-            // Todos los usuarios tienen acceso a la página de inicio
+            // Todos los usuarios tienen acceso a la página de inicio y al dashboard
             menuInicio.Visible = true;
+            menuDashboard.Visible = true;
             
             // Configurar visibilidad de los menús según el rol
             if (role == "admin" || role == "administrador")

@@ -183,6 +183,15 @@
           "build/netstandard2.0/NETStandard.Library.targets": {}
         }
       },
+      "SimpleCrypto/0.3.30.26": {
+        "type": "package",
+        "compile": {
+          "lib/SimpleCrypto.dll": {}
+        },
+        "runtime": {
+          "lib/SimpleCrypto.dll": {}
+        }
+      },
       "System.Buffers/4.5.1": {
         "type": "package",
         "compile": {
@@ -550,6 +559,15 @@
         "runtime": {
           "lib/netstandard2.0/ZstdSharp.dll": {}
         }
+      },
+      "MiniTienda.Model/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/MiniTienda.Model.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/MiniTienda.Model.dll": {}
+        }
       }
     }
   },
@@ -875,6 +893,18 @@
         "lib/netstandard1.0/_._",
         "netstandard.library.2.0.3.nupkg.sha512",
         "netstandard.library.nuspec"
+      ]
+    },
+    "SimpleCrypto/0.3.30.26": {
+      "sha512": "MiKxbgtfyZL9IXI4crb3+sLbjf8uUiVCcc1YvfajlIFlWiCbW+SejXZ2wlp/V9CGcLsYEVft7QvcncooWBAchQ==",
+      "type": "package",
+      "path": "simplecrypto/0.3.30.26",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/SimpleCrypto.dll",
+        "simplecrypto.0.3.30.26.nupkg.sha512",
+        "simplecrypto.nuspec"
       ]
     },
     "System.Buffers/4.5.1": {
@@ -1915,32 +1945,40 @@
         "zstdsharp.port.0.8.5.nupkg.sha512",
         "zstdsharp.port.nuspec"
       ]
+    },
+    "MiniTienda.Model/1.0.0": {
+      "type": "project",
+      "path": "../MiniTienda.Model/MiniTienda.Model.csproj",
+      "msbuildProject": "../MiniTienda.Model/MiniTienda.Model.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETStandard,Version=v2.0": [
+      "MiniTienda.Model >= 1.0.0",
       "MySql.Data >= 9.3.0",
-      "NETStandard.Library >= 2.0.3"
+      "NETStandard.Library >= 2.0.3",
+      "SimpleCrypto >= 0.3.30.26",
+      "System.Configuration.ConfigurationManager >= 8.0.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Elkin yandun\\.nuget\\packages\\": {},
+    "C:\\Users\\julia\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj",
+      "projectUniqueName": "C:\\Users\\julia\\source\\repos\\Presentacion\\minitiendaApp\\MiniTienda.Data\\MiniTienda.Data.csproj",
       "projectName": "MiniTienda.Data",
-      "projectPath": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\MiniTienda.Data\\MiniTienda.Data.csproj",
-      "packagesPath": "C:\\Users\\Elkin yandun\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Elkin yandun\\Source\\Repos\\MiniTienda\\MiniTienda.Data\\obj\\",
+      "projectPath": "C:\\Users\\julia\\source\\repos\\Presentacion\\minitiendaApp\\MiniTienda.Data\\MiniTienda.Data.csproj",
+      "packagesPath": "C:\\Users\\julia\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\julia\\source\\repos\\Presentacion\\minitiendaApp\\MiniTienda.Data\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Elkin yandun\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\julia\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -1954,7 +1992,11 @@
       "frameworks": {
         "netstandard2.0": {
           "targetAlias": "netstandard2.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\julia\\source\\repos\\Presentacion\\minitiendaApp\\MiniTienda.Model\\MiniTienda.Model.csproj": {
+              "projectPath": "C:\\Users\\julia\\source\\repos\\Presentacion\\minitiendaApp\\MiniTienda.Model\\MiniTienda.Model.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -1982,6 +2024,14 @@
             "target": "Package",
             "version": "[2.0.3, )",
             "autoReferenced": true
+          },
+          "SimpleCrypto": {
+            "target": "Package",
+            "version": "[0.3.30.26, )"
+          },
+          "System.Configuration.ConfigurationManager": {
+            "target": "Package",
+            "version": "[8.0.0, )"
           }
         },
         "imports": [
@@ -1998,5 +2048,17 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203\\RuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "El paquete \"SimpleCrypto 0.3.30.26\" se restauró con \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\" en lugar de la plataforma de destino del proyecto \".NETStandard,Version=v2.0\". Puede que el paquete no sea totalmente compatible con el proyecto.",
+      "libraryId": "SimpleCrypto",
+      "targetGraphs": [
+        ".NETStandard,Version=v2.0"
+      ]
+    }
+  ]
 }

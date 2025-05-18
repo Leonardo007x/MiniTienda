@@ -12,7 +12,6 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
-using MiniTienda.Logic;
 
 namespace MiniTienda.Presentation
 {
@@ -23,11 +22,19 @@ namespace MiniTienda.Presentation
     public partial class WFProducts : System.Web.UI.Page
     {
         // Objeto para acceder a la capa lógica de productos
-        private ProductsLog productsLogic = new ProductsLog();
+        private MiniTienda.Logic.ProductsLog productsLogic;
         // Objeto para acceder a la capa lógica de categorías
-        private CategoryLog categoryLogic = new CategoryLog();
+        private MiniTienda.Logic.CategoryLog categoryLogic;
         // Objeto para acceder a la capa lógica de proveedores
-        private ProvidersLog providersLogic = new ProvidersLog();
+        private MiniTienda.Logic.ProvidersLog providersLogic;
+
+        // Constructor
+        public WFProducts()
+        {
+            productsLogic = new MiniTienda.Logic.ProductsLog();
+            categoryLogic = new MiniTienda.Logic.CategoryLog();
+            providersLogic = new MiniTienda.Logic.ProvidersLog();
+        }
 
         /// <summary>
         /// Método que se ejecuta cuando se carga la página
@@ -155,6 +162,7 @@ namespace MiniTienda.Presentation
             productsTable.Columns.Add("ProductID", typeof(int));
             productsTable.Columns.Add("Name", typeof(string));
             productsTable.Columns.Add("Price", typeof(decimal));
+            productsTable.Columns.Add("Stock", typeof(int));
             productsTable.Columns.Add("CategoryID", typeof(int));
             productsTable.Columns.Add("CategoryName", typeof(string));
             productsTable.Columns.Add("ProviderID", typeof(int));
@@ -183,6 +191,7 @@ namespace MiniTienda.Presentation
                             string categoryName = "Sin categoría";
                             int providerId = 0;
                             string providerName = "Sin proveedor";
+                            int stock = 0;
                             
                             // Intentar obtener el ID con diferentes nombres de columna posibles
                             if (row.Table.Columns.Contains("pro_id"))
@@ -216,6 +225,12 @@ namespace MiniTienda.Presentation
                             if (row.Table.Columns.Contains("pro_precio"))
                             {
                                 price = row["pro_precio"] != DBNull.Value ? Convert.ToDecimal(row["pro_precio"]) : 0;
+                            }
+                            
+                            // Obtener stock del producto
+                            if (row.Table.Columns.Contains("pro_cantidad"))
+                            {
+                                stock = row["pro_cantidad"] != DBNull.Value ? Convert.ToInt32(row["pro_cantidad"]) : 0;
                             }
                             
                             // Obtener categoría ID
@@ -275,12 +290,12 @@ namespace MiniTienda.Presentation
                             }
                             
                             // Registrar información del producto que se añadirá al GridView
-                            System.Diagnostics.Debug.WriteLine($"Añadiendo producto: ID={id}, Nombre={name}, Precio={price}, " +
+                            System.Diagnostics.Debug.WriteLine($"Añadiendo producto: ID={id}, Nombre={name}, Precio={price}, Stock={stock}, " +
                                 $"CategoríaID={categoryId}, CategoríaNombre={categoryName}, " +
                                 $"ProveedorID={providerId}, ProveedorNombre={providerName}");
                             
                             // Añadir los datos a la tabla que usa el GridView
-                            productsTable.Rows.Add(id, name, price, categoryId, categoryName, providerId, providerName);
+                            productsTable.Rows.Add(id, name, price, stock, categoryId, categoryName, providerId, providerName);
         }
                         catch (Exception ex)
                         {
@@ -604,8 +619,17 @@ namespace MiniTienda.Presentation
                         return;
                     }
                     
-                    // Por defecto, mantenemos el stock actual (que no podemos editar en este UI)
+                    // Obtener el stock actual del producto desde DataKeys
                     int stock = 0;
+                    if (gvProducts.DataKeys[e.RowIndex].Values["Stock"] != null && gvProducts.DataKeys[e.RowIndex].Values["Stock"] != DBNull.Value)
+                    {
+                        stock = Convert.ToInt32(gvProducts.DataKeys[e.RowIndex].Values["Stock"]);
+                    }
+                    else
+                    {
+                        // Opcional: manejar el caso donde el stock no se pudo recuperar, aunque no debería pasar si BindProductsGrid y DataKeyNames están bien.
+                        System.Diagnostics.Debug.WriteLine($"Advertencia: No se pudo recuperar el Stock para el producto ID: {productId} durante la actualización. Usando stock = 0.");
+                    }
                 
                     // Actualizar producto usando la capa lógica
                     bool result = productsLogic.UpdateProduct(

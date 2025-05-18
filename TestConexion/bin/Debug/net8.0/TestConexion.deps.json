@@ -9,6 +9,9 @@
       "TestConexion/1.0.0": {
         "dependencies": {
           "MiniTienda.Data": "1.0.0",
+          "MiniTienda.Model": "1.0.0",
+          "MySql.Data": "9.3.0",
+          "SimpleCrypto": "0.3.30.26",
           "System.Configuration.ConfigurationManager": "8.0.0"
         },
         "runtime": {
@@ -109,6 +112,14 @@
             "rid": "win-x64",
             "assetType": "native",
             "fileVersion": "4.3.0.1"
+          }
+        }
+      },
+      "SimpleCrypto/0.3.30.26": {
+        "runtime": {
+          "lib/SimpleCrypto.dll": {
+            "assemblyVersion": "26.0.0.0",
+            "fileVersion": "26.0.0.0"
           }
         }
       },
@@ -284,10 +295,21 @@
       },
       "MiniTienda.Data/1.0.0": {
         "dependencies": {
-          "MySql.Data": "9.3.0"
+          "MiniTienda.Model": "1.0.0",
+          "MySql.Data": "9.3.0",
+          "SimpleCrypto": "0.3.30.26",
+          "System.Configuration.ConfigurationManager": "8.0.0"
         },
         "runtime": {
           "MiniTienda.Data.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "MiniTienda.Model/1.0.0": {
+        "runtime": {
+          "MiniTienda.Model.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -356,6 +378,13 @@
       "sha512": "sha512-f4iZBKubzwNnc84ecEwguv5TSwHpoArFGa+XpZY+8S9SoAnQaHfymLdZUKK4LbUbH9ACZ6X71LUvq58Mfdyipw==",
       "path": "mysql.data/9.3.0",
       "hashPath": "mysql.data.9.3.0.nupkg.sha512"
+    },
+    "SimpleCrypto/0.3.30.26": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-MiKxbgtfyZL9IXI4crb3+sLbjf8uUiVCcc1YvfajlIFlWiCbW+SejXZ2wlp/V9CGcLsYEVft7QvcncooWBAchQ==",
+      "path": "simplecrypto/0.3.30.26",
+      "hashPath": "simplecrypto.0.3.30.26.nupkg.sha512"
     },
     "System.Buffers/4.5.1": {
       "type": "package",
@@ -505,6 +534,11 @@
       "hashPath": "zstdsharp.port.0.8.5.nupkg.sha512"
     },
     "MiniTienda.Data/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MiniTienda.Model/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -294,39 +294,95 @@ namespace MiniTienda.Data
             bool executed = false; 
             int row;  
 
-            MySqlCommand objSelectCmd = new MySqlCommand();
-            objSelectCmd.Connection = objPer.openConnection();
-
-            // Se asigna el nombre del procedimiento almacenado encargado de actualizar productos
-            objSelectCmd.CommandText = "spUpdateProduct"; // <-- Asegúrate de que este procedimiento exista en tu base de datos
-            objSelectCmd.CommandType = CommandType.StoredProcedure;
-
-            // Se agregan los parámetros requeridos por el procedimiento almacenado con sus valores correspondientes
-            objSelectCmd.Parameters.Add("p_id", MySqlDbType.Int32).Value = _id;                      
-            objSelectCmd.Parameters.Add("p_code", MySqlDbType.VarString).Value = _code;              
-            objSelectCmd.Parameters.Add("p_description", MySqlDbType.VarString).Value = _description;
-            objSelectCmd.Parameters.Add("p_quantity", MySqlDbType.Int32).Value = _quantity;          
-            objSelectCmd.Parameters.Add("p_price", MySqlDbType.Double).Value = _price;               
-            objSelectCmd.Parameters.Add("p_fkcategory", MySqlDbType.Int32).Value = _fkCategory;      
-            objSelectCmd.Parameters.Add("p_fkprovider", MySqlDbType.Int32).Value = _fkProvider;      
-
             try
             {
-                // Se ejecuta el procedimiento almacenado y se obtiene cuántas filas fueron afectadas
-                row = objSelectCmd.ExecuteNonQuery();
+                // Primer intento: Usar el procedimiento almacenado
+                MySqlCommand objUpdateCmdSp = new MySqlCommand();
+                objUpdateCmdSp.Connection = objPer.openConnection();
+                objUpdateCmdSp.CommandText = "spUpdateProduct"; 
+                objUpdateCmdSp.CommandType = CommandType.StoredProcedure;
+
+                objUpdateCmdSp.Parameters.Add("p_id", MySqlDbType.Int32).Value = _id;                      
+                objUpdateCmdSp.Parameters.Add("p_code", MySqlDbType.VarString).Value = _code;              
+                objUpdateCmdSp.Parameters.Add("p_description", MySqlDbType.VarString).Value = _description;
+                objUpdateCmdSp.Parameters.Add("p_quantity", MySqlDbType.Int32).Value = _quantity;          
+                objUpdateCmdSp.Parameters.Add("p_price", MySqlDbType.Double).Value = _price;               
+                objUpdateCmdSp.Parameters.Add("p_fkcategory", MySqlDbType.Int32).Value = _fkCategory;      
+                objUpdateCmdSp.Parameters.Add("p_fkprovider", MySqlDbType.Int32).Value = _fkProvider;      
+
+                row = objUpdateCmdSp.ExecuteNonQuery();
 
                 if (row == 1)
                 {
                     executed = true;
+                    Console.WriteLine($"Producto con ID {_id} actualizado correctamente mediante procedimiento almacenado.");
+                    return executed; // Salir si el SP tuvo éxito
+                }
+                else
+                {
+                    Console.WriteLine($"Procedimiento almacenado spUpdateProduct no afectó filas para el producto ID {_id}. Intentando con SQL directo.");
                 }
             }
-            catch (Exception e)
+            catch (Exception eSp)
             {
-                // Si ocurre una excepción, se muestra el mensaje de error en consola
-                Console.WriteLine("Error " + e.ToString());
+                Console.WriteLine($"Error al actualizar producto con procedimiento almacenado: {eSp.Message}. Intentando con SQL directo.");
+            }
+            finally
+            {
+                // Cerrar la conexión solo si no se va a reintentar o si ya se terminó
+                if (executed) objPer.closeConnection();
             }
 
-            objPer.closeConnection();
+            // Segundo intento: Usar SQL directo si el SP falló o no afectó filas
+            if (!executed)
+            {
+                try
+                {
+                    MySqlCommand objUpdateCmdSql = new MySqlCommand();
+                    objUpdateCmdSql.Connection = objPer.openConnection(); // Reabrir o asegurar que esté abierta
+                    
+                    string updateQuery = @"
+                        UPDATE tbl_productos SET
+                            pro_codigo = @code,
+                            pro_descripcion = @description,
+                            pro_cantidad = @quantity,
+                            pro_precio = @price,
+                            tbl_categorias_cat_id = @fkCategory,
+                            tbl_proveedores_prov_id = @fkProvider
+                        WHERE pro_id = @id";
+                    
+                    objUpdateCmdSql.CommandText = updateQuery;
+                    objUpdateCmdSql.CommandType = CommandType.Text;
+
+                    objUpdateCmdSql.Parameters.Add("@id", MySqlDbType.Int32).Value = _id;
+                    objUpdateCmdSql.Parameters.Add("@code", MySqlDbType.VarString).Value = _code;
+                    objUpdateCmdSql.Parameters.Add("@description", MySqlDbType.VarString).Value = _description;
+                    objUpdateCmdSql.Parameters.Add("@quantity", MySqlDbType.Int32).Value = _quantity;
+                    objUpdateCmdSql.Parameters.Add("@price", MySqlDbType.Double).Value = _price;
+                    objUpdateCmdSql.Parameters.Add("@fkCategory", MySqlDbType.Int32).Value = _fkCategory;
+                    objUpdateCmdSql.Parameters.Add("@fkProvider", MySqlDbType.Int32).Value = _fkProvider;
+
+                    row = objUpdateCmdSql.ExecuteNonQuery();
+
+                    if (row == 1)
+                    {
+                        executed = true;
+                        Console.WriteLine($"Producto con ID {_id} actualizado correctamente mediante SQL directo.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"SQL directo no afectó filas para el producto ID {_id}.");
+                    }
+                }
+                catch (Exception eSql)
+                {
+                    Console.WriteLine($"Error al actualizar producto con SQL directo: {eSql.ToString()}");
+                }
+                finally
+                {
+                    objPer.closeConnection();
+                }
+            }
             return executed;
         }
 

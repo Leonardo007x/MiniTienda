@@ -1,83 +1,99 @@
-<%@ Page Title="Inicio" Language="C#" MasterPageFile="~/Main.Master" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="MiniTienda.Presentation.Index" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="MiniTienda.Presentation.Index" %>
 
 <%--
     Index.aspx
-    Página de inicio del sistema que muestra un dashboard con estadísticas
-    Proporciona acceso rápido a las principales secciones del sistema
+    Página de inicio del sistema 
+    Muestra una bienvenida al usuario autenticado
+    
+   
+    Fecha: 15/05/2025
 --%>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-</asp:Content>
+<!DOCTYPE html>
 
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <!-- Panel de bienvenida -->
-    <div class="row">
-        <div class="col-md-12 mb-4">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Bienvenido a Mini Tienda</h4>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Inicio - Mini Tienda</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+        /* Estilos para la página de inicio */
+        body {
+            background-color: #f8f9fa;
+            padding-top: 50px;
+        }
+        
+        /* Contenedor principal */
+        .welcome-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Estilos para la cabecera */
+        .welcome-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        /* Estilos para el botón de cerrar sesión */
+        .btn-logout {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div class="container">
+            <div class="welcome-container">
+                <div class="welcome-header">
+                    <h2>Mini Tienda</h2>
+                    <p class="text-muted">Panel de administración</p>
                 </div>
-                <div class="card-body">
-                    <h5>Hola, <asp:Label ID="lblUsername" runat="server" Text="Usuario"></asp:Label>!</h5>
-                    <p>Bienvenido al sistema de gestión de Mini Tienda. Desde aquí podrás administrar todos los aspectos de tu negocio.</p>
+                
+                <!-- Mensaje de bienvenida -->
+                <div class="alert alert-success">
+                    <h4>¡Bienvenido, <asp:Label ID="lblUsername" runat="server" Text="Usuario"></asp:Label>!</h4>
+                    <p>Has iniciado sesión correctamente en el sistema.</p>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0">Acciones rápidas</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item"><a href="Dashboard.aspx">Ver Dashboard</a></li>
+                                    <li class="list-group-item"><a href="WFUsers.aspx">Gestión de usuarios</a></li>
+                                    <li class="list-group-item"><a href="WFProducts.aspx">Gestión de productos</a></li>
+                                    <li class="list-group-item"><a href="WFSales.aspx">Gestión de ventas</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botón para cerrar sesión -->
+                <div class="text-center mt-4">
+                    <asp:Button ID="BtnCerrarSesion" runat="server" Text="Cerrar Sesión" 
+                        CssClass="btn btn-danger btn-logout" OnClick="BtnCerrarSesion_Click" />
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Tarjetas de estadísticas -->
-    <div class="row">
-        <div class="col-md-3 mb-4">
-            <div class="card bg-primary text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Categorías</h5>
-                    <p class="card-text display-4 text-center"><asp:Label ID="lblCategories" runat="server" Text="0"></asp:Label></p>
-                    <a href="WFCategories.aspx" class="btn btn-light btn-sm">Ver Detalles</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Productos</h5>
-                    <p class="card-text display-4 text-center"><asp:Label ID="lblProducts" runat="server" Text="0"></asp:Label></p>
-                    <a href="WFProducts.aspx" class="btn btn-light btn-sm">Ver Detalles</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card bg-warning text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Proveedores</h5>
-                    <p class="card-text display-4 text-center"><asp:Label ID="lblProviders" runat="server" Text="0"></asp:Label></p>
-                    <a href="WFProviders.aspx" class="btn btn-light btn-sm">Ver Detalles</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card bg-danger text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Usuarios</h5>
-                    <p class="card-text display-4 text-center"><asp:Label ID="lblUsers" runat="server" Text="0"></asp:Label></p>
-                    <a href="WFUsers.aspx" class="btn btn-light btn-sm">Ver Detalles</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Panel de estado del sistema -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0">Estado del Sistema</h5>
-                </div>
-                <div class="card-body">
-                    <p><strong>Fecha y Hora del Servidor:</strong> <asp:Label ID="lblDateTime" runat="server" Text=""></asp:Label></p>
-                    <p><strong>Versión del Sistema:</strong> 1.0.0</p>
-                    <p><strong>Último Acceso:</strong> <asp:Label ID="lblLastAccess" runat="server" Text=""></asp:Label></p>
-                </div>
-            </div>
-        </div>
-    </div>
-</asp:Content> 
+    </form>
+    
+    <!-- Scripts de Bootstrap y jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html> 

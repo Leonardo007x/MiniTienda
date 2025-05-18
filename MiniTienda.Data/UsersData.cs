@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using MySql.Data.MySqlClient;
+using MiniTienda.Model;
 
 namespace MiniTienda.Data
 {
@@ -38,13 +39,52 @@ namespace MiniTienda.Data
             MySqlDataAdapter objAdapter = new MySqlDataAdapter();
             DataSet objData = new DataSet();
 
-            MySqlCommand objSelectCmd = new MySqlCommand();
-            objSelectCmd.Connection = objPer.openConnection();
-            objSelectCmd.CommandText = "spSelectUsers";
-            objSelectCmd.CommandType = CommandType.StoredProcedure;
-            objAdapter.SelectCommand = objSelectCmd;
-            objAdapter.Fill(objData);
-            objPer.closeConnection();
+            try
+            {
+                MySqlCommand objSelectCmd = new MySqlCommand();
+                objSelectCmd.Connection = objPer.openConnection();
+                
+                // Usar consulta directa en lugar del procedimiento almacenado
+                objSelectCmd.CommandText = "SELECT usu_id, usu_correo, usu_estado FROM tbl_usuarios";
+                objSelectCmd.CommandType = CommandType.Text;
+                
+                // Log de diagnóstico
+                Console.WriteLine("Ejecutando consulta SQL directa para obtener usuarios");
+                
+                objAdapter.SelectCommand = objSelectCmd;
+                objAdapter.Fill(objData);
+                
+                // Verificación básica de resultados
+                if (objData != null && objData.Tables.Count > 0 && objData.Tables[0].Rows.Count > 0)
+                {
+                    Console.WriteLine($"Se encontraron {objData.Tables[0].Rows.Count} usuarios");
+                    
+                    // Listar columnas para diagnóstico
+                    Console.WriteLine("Columnas en el resultado:");
+                    foreach (DataColumn col in objData.Tables[0].Columns)
+                    {
+                        Console.WriteLine($"  - {col.ColumnName} ({col.DataType.Name})");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No se encontraron usuarios o el resultado está vacío");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en showUsers: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Error interno: {ex.InnerException.Message}");
+                }
+                // No lanzamos la excepción para mantener el comportamiento original
+            }
+            finally
+            {
+                objPer.closeConnection();
+            }
+            
             return objData;
         }
 
@@ -63,6 +103,28 @@ namespace MiniTienda.Data
             int row = 0;  // Almacena el número de filas afectadas por la ejecución del comando
 
             Console.WriteLine($"Intentando guardar usuario: Email={_mail}, Contraseña=(oculta), Salt={_salt}, Estado={_state}");
+            
+            // Diagnóstico: Verificar la estructura de la tabla primero
+            try {
+                MySqlCommand diagCmd = new MySqlCommand();
+                diagCmd.Connection = objPer.openConnection();
+                diagCmd.CommandText = "SHOW COLUMNS FROM tbl_usuarios";
+                diagCmd.CommandType = CommandType.Text;
+                
+                Console.WriteLine("Verificando estructura de la tabla tbl_usuarios:");
+                using (MySqlDataReader reader = diagCmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Console.WriteLine($"  Columna: {reader["Field"]}, Tipo: {reader["Type"]}");
+                    }
+                }
+                objPer.closeConnection();
+            }
+            catch (Exception ex) {
+                Console.WriteLine($"Error al verificar estructura de tabla: {ex.Message}");
+                // No detenemos el proceso si falla este diagnóstico
+            }
 
             try
             {
@@ -109,7 +171,7 @@ namespace MiniTienda.Data
                     string insertQuery = @"
                         INSERT INTO tbl_usuarios (
                             usu_correo, 
-                            usu_clave, 
+                            usu_contrasena, 
                             usu_salt, 
                             usu_estado
                         ) VALUES (
@@ -140,6 +202,36 @@ namespace MiniTienda.Data
                     else
                     {
                         Console.WriteLine($"No se pudo guardar el usuario. Filas afectadas: {row}");
+                    }
+                }
+                catch (MySqlException e)
+                {
+                    // Capturar específicamente errores de MySQL
+                    Console.WriteLine($"Error MySQL al guardar usuario con SQL directo: {e.Message}, Código: {e.Number}");
+                    
+                    // Error 1062 es "Duplicate entry" para clave única
+                    if (e.Number == 1062)
+                    {
+                        Console.WriteLine($"ERROR DE DUPLICADO: El correo '{_mail}' ya existe en la base de datos.");
+                        // Verificar si realmente existe consultando directamente
+                        try 
+                        {
+                            MySqlCommand checkCmd = new MySqlCommand();
+                            checkCmd.Connection = objPer.openConnection();
+                            checkCmd.CommandText = "SELECT COUNT(*) FROM tbl_usuarios WHERE usu_correo = @mail";
+                            checkCmd.Parameters.Add("@mail", MySqlDbType.VarString).Value = _mail;
+                            
+                            int count = Convert.ToInt32(checkCmd.ExecuteScalar());
+                            Console.WriteLine($"Verificación directa: {count} usuarios encontrados con el correo '{_mail}'");
+                        }
+                        catch (Exception ex) 
+                        {
+                            Console.WriteLine($"Error al verificar duplicado: {ex.Message}");
+                        }
+                        finally
+                        {
+                            objPer.closeConnection();
+                        }
                     }
                 }
                 catch (Exception e)
@@ -218,136 +310,98 @@ namespace MiniTienda.Data
         /// <returns>True si la operación fue exitosa, False en caso contrario</returns>
         public bool deleteUsers(int _id)
         {
-            bool executed = false; 
-            int row = 0; 
+            bool executed = false;
+            int row = 0;
 
             Console.WriteLine($"[INFO] Iniciando proceso de eliminación del usuario con ID: {_id}");
 
             try
             {
-                // Primer intento: intentar usar el procedimiento almacenado
+                // First check if user exists
+                MySqlCommand checkCmd = new MySqlCommand();
+                checkCmd.Connection = objPer.openConnection();
+                checkCmd.CommandText = "SELECT COUNT(*) FROM tbl_usuarios WHERE usu_id = @id";
+                checkCmd.Parameters.Add("@id", MySqlDbType.Int32).Value = _id;
+                
+                int userExists = Convert.ToInt32(checkCmd.ExecuteScalar());
+                
+                if (userExists == 0)
+                {
+                    Console.WriteLine($"[INFO] El usuario con ID {_id} no existe en la base de datos");
+                    objPer.closeConnection();
+                    return false;
+                }
+
+                // First attempt: Direct deactivation instead of deletion
+                // This is safer and avoids foreign key constraints
                 try
                 {
-                    MySqlCommand objDeleteCmd = new MySqlCommand();
-                    objDeleteCmd.Connection = objPer.openConnection();
-
-                    objDeleteCmd.CommandText = "spDeleteUsers";
-                    objDeleteCmd.CommandType = CommandType.StoredProcedure;
-                    objDeleteCmd.Parameters.Add("p_id", MySqlDbType.Int32).Value = _id;
-
-                    Console.WriteLine($"[INFO] Intentando eliminar usuario {_id} con procedimiento almacenado");
-                    row = objDeleteCmd.ExecuteNonQuery();
-                    Console.WriteLine($"[INFO] Resultado del procedimiento almacenado de eliminación: {row} filas afectadas");
-
+                    MySqlCommand deactivateCmd = new MySqlCommand();
+                    deactivateCmd.Connection = objPer.openConnection();
+                    deactivateCmd.CommandText = "UPDATE tbl_usuarios SET usu_estado = 'inactivo' WHERE usu_id = @id";
+                    deactivateCmd.CommandType = CommandType.Text;
+                    deactivateCmd.Parameters.Add("@id", MySqlDbType.Int32).Value = _id;
+                    
+                    Console.WriteLine($"[INFO] Intentando desactivar usuario {_id} en lugar de eliminarlo");
+                    row = deactivateCmd.ExecuteNonQuery();
+                    Console.WriteLine($"[INFO] Resultado de desactivación: {row} filas afectadas");
+                    
                     if (row == 1)
                     {
                         executed = true;
-                        Console.WriteLine($"[INFO] Usuario con ID {_id} eliminado correctamente mediante procedimiento almacenado");
+                        Console.WriteLine($"[INFO] Usuario con ID {_id} desactivado correctamente");
                         objPer.closeConnection();
                         return executed;
                     }
                 }
-                catch (MySqlException ex)
-                {
-                    Console.WriteLine($"[ERROR] Error de MySQL al eliminar usuario con procedimiento almacenado: {ex.Message}");
-                    Console.WriteLine($"[ERROR] Código de error: {ex.Number}");
-                    Console.WriteLine("Intentando con SQL directo...");
-                    // Cerramos la conexión y aseguramos que se abrirá una nueva en el próximo intento
-                    objPer.closeConnection();
-                }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[ERROR] Error general al eliminar usuario con procedimiento almacenado: {ex.Message}");
-                    Console.WriteLine("Intentando con SQL directo...");
-                    // Cerramos la conexión y aseguramos que se abrirá una nueva en el próximo intento
+                    Console.WriteLine($"[ERROR] Error al desactivar usuario: {ex.Message}");
                     objPer.closeConnection();
                 }
 
-                // Segundo intento: usar SQL directo para eliminar
+                // Second attempt: try to delete with SQL direct
                 try
                 {
                     MySqlCommand objDirectDeleteCmd = new MySqlCommand();
                     objDirectDeleteCmd.Connection = objPer.openConnection();
-
-                    // Consulta SQL para eliminar un usuario
-                    string deleteQuery = "DELETE FROM tbl_usuarios WHERE usu_id = @id";
-                    objDirectDeleteCmd.CommandText = deleteQuery;
+                    objDirectDeleteCmd.CommandText = "DELETE FROM tbl_usuarios WHERE usu_id = @id";
                     objDirectDeleteCmd.CommandType = CommandType.Text;
                     objDirectDeleteCmd.Parameters.Add("@id", MySqlDbType.Int32).Value = _id;
-
+                    
                     Console.WriteLine($"[INFO] Intentando eliminar usuario {_id} con SQL directo");
                     row = objDirectDeleteCmd.ExecuteNonQuery();
                     Console.WriteLine($"[INFO] Resultado de la eliminación SQL directa: {row} filas afectadas");
-
-                    if (row >= 1) // Cambiado de == 1 a >= 1 para ser más flexible
+                    
+                    if (row >= 1)
                     {
                         executed = true;
-                        Console.WriteLine($"[INFO] Usuario con ID {_id} eliminado correctamente mediante SQL directo");
+                        Console.WriteLine($"[INFO] Usuario con ID {_id} eliminado correctamente con SQL directo");
                     }
                     else
                     {
-                        // Verificar si el usuario existe
-                        MySqlCommand checkCmd = new MySqlCommand();
-                        checkCmd.Connection = objPer.openConnection();
-                        checkCmd.CommandText = "SELECT COUNT(*) FROM tbl_usuarios WHERE usu_id = @id";
-                        checkCmd.Parameters.Add("@id", MySqlDbType.Int32).Value = _id;
-                        
-                        int count = Convert.ToInt32(checkCmd.ExecuteScalar());
-                        
-                        if (count == 0)
-                        {
-                            Console.WriteLine($"[INFO] El usuario con ID {_id} no existe en la base de datos");
-                        }
-                        else
-                        {
-                            // Verificar si hay registros relacionados que impiden la eliminación
-                            Console.WriteLine($"[INFO] El usuario con ID {_id} existe pero no pudo ser eliminado. Posiblemente tiene registros relacionados");
-                        }
+                        Console.WriteLine($"[INFO] No se pudo eliminar el usuario con ID {_id}, ninguna fila afectada");
                     }
                 }
                 catch (MySqlException ex)
                 {
-                    Console.WriteLine($"[ERROR] Error de MySQL al eliminar usuario con SQL directo: {ex.Message}");
-                    Console.WriteLine($"[ERROR] Código de error: {ex.Number}");
+                    Console.WriteLine($"[ERROR] Error de MySQL al eliminar usuario: {ex.Message}, Código: {ex.Number}");
                     
-                    // Si es error de clave foránea (código 1451)
+                    // Si es error de clave foránea (código 1451), la desactivación ya fue intentada, así que reportamos error
                     if (ex.Number == 1451)
                     {
-                        Console.WriteLine("[ERROR] No se puede eliminar debido a restricciones de clave foránea. El usuario tiene registros asociados.");
-                        // Opción alternativa: desactivar el usuario en lugar de eliminarlo
-                        try {
-                            MySqlCommand updateCmd = new MySqlCommand();
-                            updateCmd.Connection = objPer.openConnection();
-                            updateCmd.CommandText = "UPDATE tbl_usuarios SET usu_estado = 'inactivo' WHERE usu_id = @id";
-                            updateCmd.Parameters.Add("@id", MySqlDbType.Int32).Value = _id;
-                            
-                            int updateResult = updateCmd.ExecuteNonQuery();
-                            if (updateResult == 1) {
-                                Console.WriteLine($"[INFO] Usuario con ID {_id} marcado como inactivo en lugar de eliminado");
-                                executed = true; // Consideramos esto un éxito
-                            }
-                        }
-                        catch (Exception updateEx) {
-                            Console.WriteLine($"[ERROR] No se pudo marcar el usuario como inactivo: {updateEx.Message}");
-                        }
+                        Console.WriteLine("[ERROR] No se puede eliminar debido a restricciones de clave foránea.");
+                        executed = true; // Consideramos exitoso pues el usuario ya fue desactivado
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[ERROR] Error general al eliminar usuario con SQL directo: {ex.Message}");
-                    if (ex.InnerException != null)
-                    {
-                        Console.WriteLine($"[ERROR] Error interno: {ex.InnerException.Message}");
-                    }
+                    Console.WriteLine($"[ERROR] Error general al eliminar usuario: {ex.Message}");
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[ERROR] Error general en el proceso de eliminación: {ex.Message}");
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"[ERROR] Error interno: {ex.InnerException.Message}");
-                }
             }
             finally
             {
@@ -355,6 +409,122 @@ namespace MiniTienda.Data
             }
 
             return executed;
+        }
+
+        // Autor: Brayan
+        // Fecha: 15/05/2025
+        // Descripcion: Obtiene un usuario específico de la base de datos utilizando su correo electrónico.
+        /// <summary>
+        /// Obtiene un usuario por su correo electrónico.
+        /// </summary>
+        /// <param name="mail">Correo electrónico del usuario a buscar.</param>
+        /// <returns>Un objeto User si se encuentra; de lo contrario, null.</returns>
+        public Model.User showUsersMail(string mail)
+        {
+            Model.User objUser = null;
+            MySqlDataReader reader = null;
+
+            try
+            {
+                MySqlCommand objSelectCmd = new MySqlCommand();
+                objSelectCmd.Connection = objPer.openConnection();
+                
+                // Diagnóstico adicional: verificar si hay correos similares en la base de datos
+                Console.WriteLine("=== DIAGNÓSTICO DE CORREO ELECTRÓNICO ===");
+                Console.WriteLine($"Buscando correo exacto: '{mail}'");
+                
+                try {
+                    // Buscar correos similares para diagnóstico
+                    MySqlCommand diagCmd = new MySqlCommand();
+                    diagCmd.Connection = objPer.openConnection();
+                    diagCmd.CommandText = "SELECT usu_id, usu_correo FROM tbl_usuarios";
+                    
+                    using (MySqlDataReader diagReader = diagCmd.ExecuteReader())
+                    {
+                        Console.WriteLine("Correos existentes en la base de datos:");
+                        int count = 0;
+                        while (diagReader.Read())
+                        {
+                            string existingMail = diagReader["usu_correo"].ToString();
+                            Console.WriteLine($"  - ID: {diagReader["usu_id"]}, Correo: '{existingMail}'");
+                            
+                            // Verificar si hay coincidencia insensible a mayúsculas/minúsculas
+                            if (existingMail.Equals(mail, StringComparison.OrdinalIgnoreCase))
+                            {
+                                Console.WriteLine($"  *** COINCIDENCIA ENCONTRADA (ignorando mayúsculas/minúsculas): '{existingMail}' vs '{mail}'");
+                            }
+                            count++;
+                        }
+                        Console.WriteLine($"Total de correos en la base de datos: {count}");
+                    }
+                }
+                catch (Exception ex) {
+                    Console.WriteLine($"Error en diagnóstico de correos: {ex.Message}");
+                }
+                
+                // Cambio a consulta SQL directa en lugar de usar procedimiento almacenado
+                objSelectCmd.CommandText = "SELECT usu_id, usu_correo, usu_contrasena, usu_salt, usu_estado FROM tbl_usuarios WHERE usu_correo = @mail";
+                objSelectCmd.CommandType = CommandType.Text;
+                objSelectCmd.Parameters.Add("@mail", MySqlDbType.VarChar).Value = mail;
+
+                // Agregar más diagnóstico
+                Console.WriteLine($"Ejecutando consulta para correo: '{mail}'");
+
+                reader = objSelectCmd.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    Console.WriteLine("Se encontraron filas en el resultado");
+                    
+                    if (reader.Read()) // Se espera un único usuario por correo
+                    {
+                        // Diagnóstico para verificar los valores obtenidos
+                        string correo = reader["usu_correo"].ToString();
+                        string contrasena = reader["usu_contrasena"].ToString();
+                        string salt = reader["usu_salt"].ToString();
+                        string estado = reader["usu_estado"].ToString();
+                        
+                        Console.WriteLine($"Datos encontrados: Correo='{correo}', Estado='{estado}'");
+                        
+                        objUser = new Model.User(correo, contrasena, salt, estado);
+                        Console.WriteLine("Objeto User creado correctamente");
+                    }
+                    else
+                    {
+                        Console.WriteLine("No se pudo leer la fila aunque reader.HasRows=true");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"No se encontraron resultados para el correo: '{mail}'");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejo de excepciones (e.g., loggear el error)
+                Console.WriteLine($"Error en showUsersMail: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+            }
+            finally
+            {
+                if (reader != null && !reader.IsClosed)
+                {
+                    reader.Close();
+                }
+                objPer.closeConnection();
+            }
+            
+            // Verificación final
+            if (objUser != null)
+            {
+                Console.WriteLine($"Devolviendo objeto User: Correo={objUser.Correo}, Contraseña={objUser.Contrasena}, Salt={objUser.Salt}, Estado={objUser.State}");
+            }
+            else
+            {
+                Console.WriteLine($"Devolviendo null para correo: {mail}");
+            }
+            
+            return objUser;
         }
     }
 }

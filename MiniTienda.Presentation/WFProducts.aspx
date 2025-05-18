@@ -68,7 +68,7 @@
                                 OnRowEditing="gvProducts_RowEditing"
                                 OnRowCancelingEdit="gvProducts_RowCancelingEdit"
                                 OnRowUpdating="gvProducts_RowUpdating"
-                                DataKeyNames="ProductID">
+                                DataKeyNames="ProductID,CategoryID,ProviderID,Stock">
                                 <Columns>
                                     <%-- Columna para el ID (solo lectura) --%>
                                     <asp:BoundField DataField="ProductID" HeaderText="ID" ReadOnly="True" />

@@ -11,7 +11,6 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
-using MiniTienda.Logic;
 
 namespace MiniTienda.Presentation
 {
@@ -22,7 +21,13 @@ namespace MiniTienda.Presentation
     public partial class WFProviders : System.Web.UI.Page
     {
         // Objeto para acceder a la capa lógica de proveedores
-        private ProvidersLog providersLogic = new ProvidersLog();
+        private MiniTienda.Logic.ProvidersLog providersLogic;
+
+        // Constructor
+        public WFProviders()
+        {
+            providersLogic = new MiniTienda.Logic.ProvidersLog();
+        }
 
         /// <summary>
         /// Método que se ejecuta cuando se carga la página
@@ -68,6 +73,7 @@ namespace MiniTienda.Presentation
                 
                 // Asignar datos al GridView
                 gvProviders.DataSource = providersTable;
+                gvProviders.DataKeyNames = new string[] { "ProviderID" };
                 gvProviders.DataBind();
             }
             catch (Exception ex)
@@ -137,6 +143,9 @@ namespace MiniTienda.Presentation
                 // Obtener el ID del proveedor a eliminar
                 int providerId = Convert.ToInt32(gvProviders.DataKeys[e.RowIndex].Value);
                 
+                // Mostrar mensaje de confirmación en consola para depuración
+                System.Diagnostics.Debug.WriteLine($"Intentando eliminar proveedor con ID: {providerId}");
+                
                 // Eliminar proveedor usando la capa lógica
                 bool result = providersLogic.DeleteProvider(providerId);
                 
@@ -148,6 +157,11 @@ namespace MiniTienda.Presentation
                     // Mostrar mensaje de éxito
                     ScriptManager.RegisterStartupScript(this, GetType(), "SuccessMessage", 
                         "alert('Proveedor eliminado exitosamente.');", true);
+                }
+                else
+                {
+                    // Si no se pudo eliminar, mostrar mensaje de error
+                    ShowErrorMessage("No se pudo eliminar el proveedor. Puede estar siendo utilizado por otros registros.");
                 }
             }
             catch (Exception ex)
